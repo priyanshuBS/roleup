@@ -26,6 +26,9 @@ export function createDb(
   opts: { max?: number } = {},
 ): { db: Db; close: () => Promise<void> } {
   if (!url) throw new Error('DATABASE_URL is not set. See .env.example.');
+  // DB_POOL_MAX=1 is required with the local PGlite socket server (one engine, one connection).
+  const envMax = Number(process.env.DB_POOL_MAX);
+  if (Number.isInteger(envMax) && envMax > 0) opts = { ...opts, max: envMax };
   if (isNeonUrl(url)) {
     const pool = new NeonPool({ connectionString: url, max: opts.max ?? 5 });
     return { db: drizzleNeon(pool, { schema }) as unknown as Db, close: () => pool.end() };
