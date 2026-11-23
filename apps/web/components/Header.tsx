@@ -1,50 +1,47 @@
 import Link from 'next/link';
+import { NavLinks } from './NavLinks';
 import { SavedCount } from './SavedCount';
 import { ThemeToggle } from './ThemeToggle';
 
-const NAV = [
-  { href: '/', label: 'Latest' },
-  { href: '/companies', label: 'Companies' },
-  { href: '/remote-jobs', label: 'Remote' },
-  { href: '/yc-jobs', label: 'YC' },
-  { href: '/funded-startups-hiring', label: 'Funded' },
-  { href: '/ats-checker', label: 'ATS checker' },
-];
+function Logo() {
+  return (
+    <Link href="/" className="flex shrink-0 items-center gap-2" aria-label="RoleUp home">
+      <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden>
+        <rect width="32" height="32" rx="7" fill="var(--ru-accent)" />
+        <path
+          d="M10 23V9h6.2c3 0 4.8 1.6 4.8 4.2 0 1.9-1 3.2-2.7 3.8L21.6 23h-3.3l-2.9-5.6H13V23zm3-8.2h3c1.3 0 2-.6 2-1.6s-.7-1.6-2-1.6h-3z"
+          fill="var(--ru-accent-text)"
+        />
+      </svg>
+      <span className="text-md font-semibold tracking-tight">
+        Role<span className="text-accent">Up</span>
+      </span>
+    </Link>
+  );
+}
 
 export function Header() {
   return (
-    <header className="border-b border-border bg-surface">
-      <div className="max-w-[1120px] mx-auto px-4 sm:px-6 h-14 flex items-center gap-3 sm:gap-5">
-        <Link
-          href="/"
-          className="font-semibold text-md tracking-tight shrink-0"
-          aria-label="RoleUp home"
-        >
-          Role<span className="text-accent">Up</span>
-        </Link>
-        <nav aria-label="Main" className="flex-1 min-w-0 overflow-x-auto [scrollbar-width:none]">
-          <ul className="flex items-center gap-0.5 text-sm text-text-muted">
-            {NAV.map((n) => (
-              <li key={n.href}>
-                <Link
-                  href={n.href}
-                  className="block px-2 py-1.5 rounded-sm hover:text-text hover:bg-surface-muted whitespace-nowrap"
-                >
-                  {n.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
-        <div className="flex items-center gap-0.5 shrink-0">
+    <header className="sticky top-0 z-30 border-b border-border bg-surface">
+      <div className="mx-auto flex h-14 max-w-[1180px] items-center gap-3 px-4 sm:gap-6 sm:px-6">
+        <Logo />
+        <div className="hidden min-w-0 flex-1 sm:block">
+          <NavLinks />
+        </div>
+        <div className="flex-1 sm:hidden" />
+        <div className="flex shrink-0 items-center gap-1">
           <Link
             href="/saved"
-            className="px-2 py-1.5 rounded-sm text-sm text-text-muted hover:text-text hover:bg-surface-muted whitespace-nowrap"
+            className="inline-flex h-8 items-center gap-1 rounded-md px-2.5 text-sm text-text-muted hover:bg-surface-muted hover:text-text"
           >
             Saved <SavedCount />
           </Link>
           <ThemeToggle />
         </div>
+      </div>
+      {/* Phones: full-width scrollable nav row under the logo. */}
+      <div className="border-t border-border px-2 sm:hidden">
+        <NavLinks compact />
       </div>
     </header>
   );

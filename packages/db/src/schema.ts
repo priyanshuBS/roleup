@@ -195,6 +195,37 @@ export const rateLimits = pgTable('rate_limits', {
   count: integer('count').notNull().default(0),
 });
 
+export const analyticsEventType = pgEnum('analytics_event_type', ['view', 'click']);
+
+/**
+ * First-party, cookieless analytics. No IPs or user agents are stored. `visitor` is a hash of
+ * (daily-rotating secret salt + IP + UA), so a visitor can be counted once per day but can't be
+ * recognised across days or reversed to an IP.
+ */
+export const analyticsEvents = pgTable(
+  'analytics_events',
+  {
+    id: bigint('id', { mode: 'number' }).primaryKey().generatedAlwaysAsIdentity(),
+    type: analyticsEventType('type').notNull(),
+    /** Page path without query string, e.g. /jobs/in/pune */
+    path: text('path').notNull(),
+    /** Clicks only: what was clicked, e.g. "apply:<job-slug>", "out:stripe.com", "/companies" */
+    target: text('target'),
+    /** Clicks only: short visible label of the element */
+    label: text('label'),
+    /** Referring site host for views from other sites, e.g. google.com */
+    referrer: text('referrer'),
+    device: text('device').notNull().default('desktop'),
+    country: text('country'),
+    visitor: text('visitor').notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index('analytics_type_created_idx').on(t.type, t.createdAt),
+    index('analytics_created_idx').on(t.createdAt),
+  ],
+);
+
 export type Company = typeof companies.$inferSelect;
 export type NewCompany = typeof companies.$inferInsert;
 export type Job = typeof jobs.$inferSelect;

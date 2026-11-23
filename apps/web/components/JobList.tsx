@@ -20,8 +20,9 @@ export function JobList({
   const now = new Date();
   if (jobs.length === 0) {
     return (
-      <div className="rounded-md border border-border bg-surface px-4 py-10 text-center">
-        <p className="text-text-muted">{emptyText}</p>
+      <div className="card px-4 py-14 text-center">
+        <p className="text-md font-medium text-text">Nothing here yet</p>
+        <p className="mt-1 text-sm text-text-muted">{emptyText}</p>
         {clearHref && (
           <Link href={clearHref} className="link mt-2 inline-block text-sm">
             Clear filters
@@ -32,7 +33,7 @@ export function JobList({
   }
   return (
     <>
-      <ul className="rounded-md border border-border bg-surface">
+      <ul className="card overflow-hidden">
         {jobs.map((j) => (
           <JobRow key={j.id} job={j} now={now} />
         ))}

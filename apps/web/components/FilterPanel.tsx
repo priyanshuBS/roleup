@@ -225,8 +225,12 @@ export function FilterPanel(props: FilterPanelProps) {
   return (
     <>
       {/* Desktop: sidebar */}
-      <aside aria-label="Filters" className="hidden lg:block w-60 shrink-0">
-        <div className="sticky top-4">
+      <aside aria-label="Filters" className="hidden w-64 shrink-0 lg:block">
+        <div className="card sticky top-20 p-4">
+          <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold">
+            <SlidersHorizontal size={14} aria-hidden className="text-text-subtle" />
+            Filters
+          </h2>
           <Fields {...props} p="fd" />
         </div>
       </aside>

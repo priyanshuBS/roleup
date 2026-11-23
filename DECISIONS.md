@@ -81,3 +81,16 @@ Choices made where the brief was ambiguous or where a constraint forced a call. 
 - **Explore** opens a generic filtered list screen. The last 6 opened filters are remembered on device as "Recent".
 - **Resume upload** sends `{ uri, name, type }` in `FormData` (React Native's file form) to the same `/api/v1/ats-check` endpoint the website uses.
 - `EXPO_PUBLIC_API_URL` is set per EAS profile in `eas.json`. Replace the placeholder domain before building.
+
+## Analytics (admin)
+
+- **First-party and cookieless.** A small client component sends page views (on route change) and clicks (delegated listener on links/buttons) to `POST /api/e` with `sendBeacon`. No third-party scripts, cookies or local storage. The endpoint path is deliberately generic so ad blockers that target "analytics" paths don't hide most visits.
+- **What's stored per event**: type, path (no query string), click target (`apply:<slug>`, `out:<host>`, internal path, or button label), external referrer host, device class, country code (Vercel header), and a visitor hash. **No IPs, no user agents.** The visitor hash is `sha256(HMAC(secret, IST date) | ip | ua)`, so it counts unique visitors per day but can't link days or be reversed. "Visitors" in the dashboard is the sum of daily uniques.
+- **Excluded**: bots (UA list), automated browsers (`navigator.webdriver`, which covers Lighthouse/Puppeteer), `/admin`, `/api`, and anyone sending Do Not Track or Global Privacy Control. The endpoint has a per-instance in-memory throttle (120 events/min per visitor) and same-origin checks in production. Events older than ~13 months are pruned opportunistically.
+- **Dashboard** (`/admin/analytics`): 7/30/90-day ranges with comparison to the previous period; page views, visitors, clicks, apply clicks, apply rate (apply clicks ÷ job-page views); a single-series daily bar chart with a metric switch (one axis), hover tooltip and table view; top pages, most-applied jobs, top clicks, referrers, devices, countries; "visitors in the last 30 minutes". Days are bucketed in IST.
+- **Chart colour**: a dedicated `chart` token (light `#1F4FA8`, dark `#5B8BE6`) that passes the dataviz palette validator on both surfaces. The dark accent `#7EA6F2` was too light for marks.
+
+## UI refresh
+
+- Inter (self-hosted via `next/font`), a sticky header with the current section underlined, a search-first home header with live counts, structured job rows (salary and time right-aligned, colour-coded work mode), removable active-filter chips with a result count, a two-column job page with a sticky apply card, description sub-headings detected from the text, and a full footer. On phones, nav moves to its own scrollable row under the logo.
+- `cursor: pointer` is set globally for every interactive element (Tailwind v4 resets buttons to the default cursor), and `not-allowed` for disabled controls.

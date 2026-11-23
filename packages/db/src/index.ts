@@ -20,3 +20,4 @@ export {
 } from 'drizzle-orm';
 export * from './queries';
 export * from './mutations';
+export * from './analytics';

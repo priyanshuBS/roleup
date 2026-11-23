@@ -107,3 +107,19 @@ describe('format', () => {
     expect(salaryOriginal(usd)).toBe('$200K–270K/yr');
   });
 });
+
+import { parseDescription } from '../components/JobDescription';
+
+describe('parseDescription', () => {
+  it('promotes headings that introduce lists and colon lines', () => {
+    const blocks = parseDescription(
+      'About us\nWe build payments.\n\nWhat You Will Build\n• APIs\n• Tools\n\nRequirements:\nGo and Kafka.',
+    );
+    expect(blocks.map((b) => b.type)).toEqual(['p', 'h', 'ul', 'h', 'p']);
+    expect(blocks[1]).toEqual({ type: 'h', text: 'What You Will Build' });
+    expect(blocks[3]).toEqual({ type: 'h', text: 'Requirements' });
+  });
+  it('keeps sentences as paragraphs', () => {
+    expect(parseDescription('We are hiring.\n• one').map((b) => b.type)).toEqual(['p', 'ul']);
+  });
+});

@@ -11,7 +11,10 @@ export const metadata: Metadata = {
 export default function PrivacyPage() {
   return (
     <Prose title="Privacy" updated="23 November 2026">
-      <p>Short version: no accounts, no tracking, and we never keep your resume.</p>
+      <p>
+        Short version: no accounts, no cookies, no third-party trackers, and we never keep your
+        resume. We count page views and clicks ourselves, anonymously.
+      </p>
       <h2>No accounts</h2>
       <p>RoleUp has no sign-up or login. We don&apos;t collect your name, email or phone number.</p>
       <h2>Saved jobs</h2>
@@ -32,8 +35,26 @@ export default function PrivacyPage() {
           IP, not the IP itself, and delete the counts after the hour.
         </li>
       </ul>
-      <h2>Analytics and cookies</h2>
-      <p>No analytics scripts, no advertising cookies, no third-party trackers.</p>
+      <h2>Visit counts</h2>
+      <p>
+        To know which pages and jobs are useful, we count page views and clicks with our own code.
+        No third-party analytics, no cookies, nothing stored on your device. For each view or click
+        we record:
+      </p>
+      <ul>
+        <li>the page path (e.g. /jobs/in/pune) and what was clicked (e.g. an Apply button)</li>
+        <li>the website that sent you, if any (just its name, e.g. google.com)</li>
+        <li>device type (mobile, tablet or desktop) and country</li>
+        <li>
+          a visitor code made by hashing your IP address and browser with a secret that changes
+          every day. It lets us count unique visitors per day, but can&apos;t identify you or link
+          your visits across days. Your IP address itself is never stored.
+        </li>
+      </ul>
+      <p>
+        If your browser sends Do Not Track or Global Privacy Control, we don&apos;t count you at
+        all. Counts are deleted after about 13 months. There are no advertising cookies.
+      </p>
       <h2>Company logos</h2>
       <p>
         Small company logos are loaded from a public favicon service using the company&apos;s

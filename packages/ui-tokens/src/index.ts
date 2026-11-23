@@ -24,6 +24,8 @@ export const palette = {
     danger: '#B3261E',
     dangerSubtle: '#FBE9E7',
     focus: '#1F4FA8',
+    /** Single-series chart marks (validated vs surface with the dataviz checker). */
+    chart: '#1F4FA8',
   },
   dark: {
     bg: '#0E0E10',
@@ -45,6 +47,7 @@ export const palette = {
     danger: '#F2867D',
     dangerSubtle: '#2E1715',
     focus: '#7EA6F2',
+    chart: '#5B8BE6',
   },
 } as const;
 

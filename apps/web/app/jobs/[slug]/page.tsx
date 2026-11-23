@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ExternalLink } from 'lucide-react';
+import { Briefcase, Clock, ExternalLink, FileCheck2, IndianRupee, MapPin } from 'lucide-react';
 import {
   COMPANY_TAG_LABELS,
   LEVEL_LABELS,
@@ -43,6 +43,28 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+function Fact({
+  icon,
+  label,
+  children,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="flex gap-3 py-2.5">
+      <span className="mt-0.5 text-text-subtle" aria-hidden>
+        {icon}
+      </span>
+      <div className="min-w-0">
+        <dt className="text-xs text-text-subtle">{label}</dt>
+        <dd className="text-sm font-medium text-text">{children}</dd>
+      </div>
+    </div>
+  );
+}
+
 export default async function JobPage({ params }: Props) {
   const { slug } = await params;
   const job = await getJobBySlug(slug);
@@ -55,10 +77,20 @@ export default async function JobPage({ params }: Props) {
   const salary = salaryLabel(job);
   const original = salaryOriginal(job);
   const location = locationLabel(job);
-  const tags = job.company.tags.filter((t) => t !== 'product');
+  const tags = job.company.tags.filter((t) => t !== 'product' && t !== 'yc');
+  const posted = job.postedAt ?? job.firstSeenAt;
+  const saveJob = {
+    id: job.id,
+    slug: job.slug,
+    title: job.title,
+    companyName: job.company.name,
+    companySlug: job.company.slug,
+    location,
+    salary,
+  };
 
   return (
-    <article className="max-w-3xl">
+    <article>
       {/* No JobPosting markup for closed or US/EU-only roles (not India-eligible). */}
       {!job.closedAt && job.remoteType !== 'remote_restricted' && (
         <script
@@ -69,199 +101,229 @@ export default async function JobPage({ params }: Props) {
         />
       )}
 
-      {job.closedAt && (
-        <div
-          role="status"
-          className="mb-4 rounded-md border border-warning/40 bg-warning-subtle px-4 py-3 text-sm text-warning"
-        >
-          This job is closed. It was removed from {job.company.name}&apos;s job board{' '}
-          {timeAgo(job.closedAt, now)}.
-        </div>
-      )}
-
-      <nav aria-label="Breadcrumb" className="mb-3 text-sm text-text-muted">
+      <nav aria-label="Breadcrumb" className="mb-4 text-sm text-text-muted">
         <Link href="/" className="hover:text-text">
           Jobs
         </Link>
-        <span aria-hidden> / </span>
+        <span aria-hidden className="mx-1.5 text-text-subtle">
+          /
+        </span>
         <Link href={companyHref(job.company.slug)} className="hover:text-text">
           {job.company.name}
         </Link>
       </nav>
 
-      <header className="flex gap-4">
-        <CompanyLogo company={job.company} size={48} />
-        <div className="min-w-0">
-          <h1 className="text-xl sm:text-2xl font-semibold leading-tight tracking-tight">
-            {job.title}
-          </h1>
-          <p className="mt-1 text-base text-text-muted">
-            <Link
-              href={companyHref(job.company.slug)}
-              className="text-text hover:underline underline-offset-2"
-            >
-              {job.company.name}
-            </Link>
-            {' · '}
-            {job.city ? (
-              <Link href={cityHref(job.city.slug)} className="hover:underline underline-offset-2">
-                {location}
-              </Link>
-            ) : (
-              location
-            )}
-          </p>
+      {job.closedAt && (
+        <div
+          role="status"
+          className="mb-5 rounded-md border border-warning/40 bg-warning-subtle px-4 py-3 text-sm text-warning"
+        >
+          <strong>This job is closed.</strong> It was removed from {job.company.name}&apos;s job
+          board {timeAgo(job.closedAt, now)}. Similar roles may still be open on the{' '}
+          <Link href={companyHref(job.company.slug)} className="underline">
+            company page
+          </Link>
+          .
         </div>
-      </header>
+      )}
 
-      <dl className="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-px overflow-hidden rounded-md border border-border bg-border text-sm">
-        <div className="bg-surface p-3">
-          <dt className="text-xs text-text-subtle">Level</dt>
-          <dd className="mt-0.5 font-medium">
-            {LEVEL_LABELS[job.level]}
-            {job.minYears != null ? ` · ${job.minYears}+ yrs` : ''}
-          </dd>
-        </div>
-        <div className="bg-surface p-3">
-          <dt className="text-xs text-text-subtle">Role</dt>
-          <dd className="mt-0.5 font-medium">{ROLE_CATEGORY_LABELS[job.roleCategory]}</dd>
-        </div>
-        <div className="bg-surface p-3">
-          <dt className="text-xs text-text-subtle">Work mode</dt>
-          <dd className="mt-0.5 font-medium">{REMOTE_TYPE_LABELS[job.remoteType]}</dd>
-        </div>
-        <div className="bg-surface p-3">
-          <dt className="text-xs text-text-subtle">Salary</dt>
-          <dd className="mt-0.5 font-medium tabular-nums">
-            {salary ? (
-              <>
-                {salary}
-                <span className="font-normal text-text-subtle"> /yr</span>
-                {original && (
-                  <span className="block text-xs font-normal text-text-subtle">
-                    {original} (employer)
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-8">
+        {/* Main column */}
+        <div className="min-w-0">
+          <header className="flex gap-4">
+            <CompanyLogo company={job.company} size={56} />
+            <div className="min-w-0">
+              <h1 className="text-2xl font-semibold leading-tight tracking-tight sm:text-[1.75rem]">
+                {job.title}
+              </h1>
+              <p className="mt-1.5 text-base text-text-muted">
+                <Link
+                  href={companyHref(job.company.slug)}
+                  className="font-medium text-text hover:underline underline-offset-2"
+                >
+                  {job.company.name}
+                </Link>
+                <span aria-hidden className="mx-1.5 text-text-subtle">
+                  ·
+                </span>
+                {job.city ? (
+                  <Link
+                    href={cityHref(job.city.slug)}
+                    className="hover:underline underline-offset-2"
+                  >
+                    {location}
+                  </Link>
+                ) : (
+                  location
+                )}
+              </p>
+              <div className="mt-3 flex flex-wrap gap-1.5">
+                <span className="tag">{LEVEL_LABELS[job.level]}</span>
+                <span className="tag">{ROLE_CATEGORY_LABELS[job.roleCategory]}</span>
+                {job.remoteType.startsWith('remote_') && (
+                  <span
+                    className={`tag ${job.remoteType === 'remote_india' ? 'tag-success' : job.remoteType === 'remote_global' ? 'tag-accent' : 'tag-warning'}`}
+                  >
+                    {REMOTE_TYPE_LABELS[job.remoteType]}
                   </span>
                 )}
-              </>
-            ) : (
-              <span className="font-normal text-text-muted">Not disclosed</span>
-            )}
-          </dd>
-        </div>
-      </dl>
+                {job.company.ycBatch && (
+                  <span className="tag tag-accent">YC {job.company.ycBatch}</span>
+                )}
+                {job.company.tags.includes('recently_funded') && (
+                  <span className="tag tag-success">Recently funded</span>
+                )}
+              </div>
+            </div>
+          </header>
 
-      <div className="mt-5 flex flex-wrap items-center gap-2">
-        {!job.closedAt && (
-          <a
-            href={job.applyUrl}
-            target="_blank"
-            rel="noopener noreferrer nofollow"
-            className="btn btn-primary"
-          >
-            Apply on company site <ExternalLink size={14} aria-hidden />
-          </a>
-        )}
-        <Link href={`/ats-checker?job=${encodeURIComponent(job.slug)}`} className="btn">
-          Check my resume against this job
-        </Link>
-        <SaveButton
-          withLabel
-          job={{
-            id: job.id,
-            slug: job.slug,
-            title: job.title,
-            companyName: job.company.name,
-            companySlug: job.company.slug,
-            location,
-            salary,
-          }}
-        />
-      </div>
+          <section aria-labelledby="desc" className="card mt-6 p-5 sm:p-6">
+            <h2 id="desc" className="mb-4 text-md font-semibold">
+              About the role
+            </h2>
+            <JobDescription
+              text={
+                job.descriptionText || 'No description provided. See the company site for details.'
+              }
+            />
+          </section>
 
-      <p className="mt-3 text-xs text-text-subtle tabular-nums">
-        Posted {timeAgo(job.postedAt ?? job.firstSeenAt, now)} · Last checked{' '}
-        {timeAgo(job.lastSeenAt, now)} · Source: {job.company.name} careers ({job.source})
-        {job.locationRaw && job.locationRaw !== location ? (
-          <> · Listed location: {job.locationRaw}</>
-        ) : null}
-      </p>
-
-      <section aria-labelledby="desc" className="mt-6 border-t border-border pt-6">
-        <h2 id="desc" className="sr-only">
-          Job description
-        </h2>
-        <JobDescription
-          text={job.descriptionText || 'No description provided. See the company site for details.'}
-        />
-      </section>
-
-      {company && (
-        <section
-          aria-labelledby="about-company"
-          className="mt-8 rounded-md border border-border bg-surface p-4"
-        >
-          <h2 id="about-company" className="text-md font-semibold">
-            About {company.name}
-          </h2>
-          <div className="mt-2 flex flex-wrap gap-1.5">
-            {company.ycBatch && <span className="tag tag-accent">YC {company.ycBatch}</span>}
-            {tags
-              .filter((t) => t !== 'yc')
-              .map((t) => (
-                <span key={t} className="tag">
-                  {COMPANY_TAG_LABELS[t]}
-                </span>
-              ))}
-          </div>
-          <p className="mt-2 text-sm text-text-muted tabular-nums">
-            {company.openJobsCount.toLocaleString('en-IN')} open tech{' '}
-            {company.openJobsCount === 1 ? 'job' : 'jobs'}
-            {company.website && (
-              <>
-                {' · '}
-                <a
-                  href={company.website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="link"
-                >
-                  {company.domain ?? 'Website'}
-                </a>
-              </>
-            )}
-          </p>
-          {company.fundings[0] && (
-            <p className="mt-1 text-sm text-text-muted">
-              Raised {company.fundings[0].round} on {company.fundings[0].announcedOn} (
-              <a
-                href={company.fundings[0].sourceUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="link"
-              >
-                source
-              </a>
-              )
-            </p>
+          {similar.length > 0 && (
+            <section aria-labelledby="similar" className="mt-8">
+              <h2 id="similar" className="mb-3 text-md font-semibold">
+                Similar jobs
+              </h2>
+              <ul className="card overflow-hidden">
+                {similar.map((j) => (
+                  <JobRow key={j.id} job={j} now={now} />
+                ))}
+              </ul>
+            </section>
           )}
-          <Link href={companyHref(company.slug)} className="link mt-2 inline-block text-sm">
-            All jobs at {company.name}
-          </Link>
-        </section>
-      )}
+        </div>
 
-      {similar.length > 0 && (
-        <section aria-labelledby="similar" className="mt-8">
-          <h2 id="similar" className="mb-2 text-md font-semibold">
-            Similar jobs
-          </h2>
-          <ul className="rounded-md border border-border bg-surface">
-            {similar.map((j) => (
-              <JobRow key={j.id} job={j} now={now} />
-            ))}
-          </ul>
-        </section>
-      )}
+        {/* Sidebar: sticky apply card + company. On phones it sits above the description. */}
+        <aside className="order-first lg:order-none">
+          <div className="space-y-4 lg:sticky lg:top-20">
+            <div className="card p-4">
+              <dl className="divide-y divide-border">
+                <Fact icon={<IndianRupee size={16} />} label="Salary (per year)">
+                  {salary ? (
+                    <span className="tabular-nums">
+                      {salary}
+                      {original && (
+                        <span className="block text-xs font-normal text-text-subtle">
+                          {original}, as posted
+                        </span>
+                      )}
+                    </span>
+                  ) : (
+                    <span className="font-normal text-text-muted">Not disclosed by employer</span>
+                  )}
+                </Fact>
+                <Fact icon={<MapPin size={16} />} label="Location">
+                  {job.remoteType.startsWith('remote_')
+                    ? REMOTE_TYPE_LABELS[job.remoteType]
+                    : `${job.city?.name ?? location} · ${REMOTE_TYPE_LABELS[job.remoteType]}`}
+                </Fact>
+                <Fact icon={<Briefcase size={16} />} label="Experience">
+                  {LEVEL_LABELS[job.level]}
+                  {job.minYears != null ? ` · ${job.minYears}+ years` : ''}
+                </Fact>
+                <Fact icon={<Clock size={16} />} label="Posted">
+                  <span className="tabular-nums">
+                    {timeAgo(posted, now)}
+                    <span className="font-normal text-text-subtle">
+                      {' '}
+                      · checked {timeAgo(job.lastSeenAt, now)}
+                    </span>
+                  </span>
+                </Fact>
+              </dl>
+              <div className="mt-3 space-y-2">
+                {!job.closedAt && (
+                  <a
+                    href={job.applyUrl}
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                    data-track={`apply:${job.slug}`}
+                    className="btn btn-primary btn-lg w-full"
+                  >
+                    Apply on company site <ExternalLink size={15} aria-hidden />
+                  </a>
+                )}
+                <div className="grid grid-cols-2 gap-2">
+                  <SaveButton withLabel job={saveJob} />
+                  <Link
+                    href={`/ats-checker?job=${encodeURIComponent(job.slug)}`}
+                    className="btn"
+                    data-track={`resume-check:${job.slug}`}
+                  >
+                    <FileCheck2 size={14} aria-hidden /> Check resume
+                  </Link>
+                </div>
+              </div>
+              <p className="mt-3 text-xs text-text-subtle">
+                You&apos;ll apply on {job.company.name}&apos;s own careers page ({job.source}).
+                RoleUp never asks for your details.
+              </p>
+            </div>
+
+            {company && (
+              <section aria-labelledby="about-company" className="card p-4">
+                <div className="flex items-center gap-3">
+                  <CompanyLogo company={company} size={36} />
+                  <div className="min-w-0">
+                    <h2 id="about-company" className="truncate text-sm font-semibold">
+                      {company.name}
+                    </h2>
+                    {company.website && (
+                      <a
+                        href={company.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs text-text-muted hover:text-text"
+                      >
+                        {company.domain}
+                      </a>
+                    )}
+                  </div>
+                </div>
+                {tags.length > 0 && (
+                  <div className="mt-3 flex flex-wrap gap-1.5">
+                    {tags.map((t) => (
+                      <span key={t} className="tag">
+                        {COMPANY_TAG_LABELS[t]}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                {company.fundings[0] && (
+                  <p className="mt-3 text-xs text-text-muted">
+                    Raised{' '}
+                    {company.fundings[0].round === 'Undisclosed'
+                      ? 'funding'
+                      : company.fundings[0].round}{' '}
+                    on {company.fundings[0].announcedOn} ·{' '}
+                    <a
+                      href={company.fundings[0].sourceUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="link"
+                    >
+                      source
+                    </a>
+                  </p>
+                )}
+                <Link href={companyHref(company.slug)} className="btn mt-3 w-full">
+                  {company.openJobsCount} open {company.openJobsCount === 1 ? 'job' : 'jobs'} at{' '}
+                  {company.name}
+                </Link>
+              </section>
+            )}
+          </div>
+        </aside>
+      </div>
     </article>
   );
 }
