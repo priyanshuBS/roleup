@@ -1,0 +1,67 @@
+name: Workers
+
+on:
+  schedule:
+    - cron: '17 */6 * * *' # crawl-jobs every 6 hours
+    - cron: '41 2 * * *' # daily: sync-yc, track-funding, detect-ats (02:41 UTC = 08:11 IST)
+  workflow_dispatch:
+    inputs:
+      task:
+        description: 'Which worker to run'
+        type: choice
+        options: [crawl, daily, all]
+        default: crawl
+
+concurrency:
+  group: workers
+  cancel-in-progress: false
+
+env:
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  DATABASE_URL_UNPOOLED: ${{ secrets.DATABASE_URL_UNPOOLED }}
+  USD_INR_RATE: ${{ vars.USD_INR_RATE || '84' }}
+  CRAWLER_CONTACT_EMAIL: ${{ secrets.CRAWLER_CONTACT_EMAIL }}
+  NEXT_PUBLIC_SITE_URL: ${{ vars.SITE_URL }}
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      - name: Apply migrations
+        run: pnpm db:migrate
+
+      - name: Seed cities and companies (idempotent)
+        run: pnpm db:seed
+
+      - name: Crawl jobs
+        if: github.event.schedule == '17 */6 * * *' || inputs.task == 'crawl' || inputs.task == 'all'
+        run: pnpm crawl
+
+      - name: Sync YC tags
+        if: github.event.schedule == '41 2 * * *' || inputs.task == 'daily' || inputs.task == 'all'
+        run: pnpm sync-yc
+
+      - name: Track funding news
+        if: github.event.schedule == '41 2 * * *' || inputs.task == 'daily' || inputs.task == 'all'
+        run: pnpm track-funding
+
+      - name: Detect ATS for queued companies
+        if: github.event.schedule == '41 2 * * *' || inputs.task == 'daily' || inputs.task == 'all'
+        run: pnpm detect-ats
+
+      - name: Refresh site caches
+        if: always() && vars.SITE_URL != ''
+        env:
+          ADMIN_TOKEN: ${{ secrets.ADMIN_TOKEN }}
+        run: |
+          curl -fsS -X POST "${{ vars.SITE_URL }}/api/admin/revalidate" \
+            -H "Authorization: Bearer $ADMIN_TOKEN" || echo "revalidate failed (site will refresh within 10 minutes anyway)"

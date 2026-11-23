@@ -38,7 +38,7 @@ Choices made where the brief was ambiguous or where a constraint forced a call. 
 - **Ordering** is always newest first (`posted_at desc, id desc`) with keyset cursors, including for text search. Relevance ranking would break stable cursors; search narrows rather than ranks.
 - **Pagination on the web** is plain links ("Older jobs" / "Back to newest") with `?cursor=`. This works without JavaScript and is crawlable. Mobile uses infinite scroll on the same cursor.
 - **Filters UI** uses native `<select>`s (accessible, tiny). The only Radix primitive is Dialog, for the mobile bottom sheet.
-- **Logos.** `companies.logo_url` wins. Otherwise the company's favicon via DuckDuckGo's icon service (`no-referrer`), with initials as a fallback. Fixed 28px box, so no layout shift.
+- **Logos.** `companies.logo_url` wins. Otherwise a 64px favicon from Google's public favicon endpoint (~0.3 KB each, versus ~15 KB for raw `.ico` files; Lighthouse flagged the difference), loaded with `no-referrer`, with initials as a fallback. Fixed 28px box, so no layout shift.
 - **JSON-LD** is emitted only for open, India-eligible jobs. `baseSalary` only when the salary is employer-provided; `TELECOMMUTE` only for remote types; remote roles list India in `applicantLocationRequirements`. US/EU-only roles get no JobPosting markup and stay out of the sitemap.
 - **`/remote-jobs`** defaults to "any remote" (including restricted, clearly labelled), and sub-chips switch type. `/remote-jobs-india` is fixed to India OK.
 - **Company directory counts** show India-eligible open jobs next to the total, matching what the default feed shows.

@@ -40,7 +40,7 @@ export function salaryOriginal(job: Pick<JobListItem, 'salary'>): string | null 
 
 export function logoSrc(company: { logoUrl: string | null; domain: string | null }): string | null {
   if (company.logoUrl) return company.logoUrl;
-  if (company.domain) return `https://icons.duckduckgo.com/ip3/${company.domain}.ico`;
+  if (company.domain) return `https://www.google.com/s2/favicons?domain=${company.domain}&sz=64`;
   return null;
 }
 

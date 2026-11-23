@@ -15,14 +15,14 @@ export function JobRow({ job, now }: { job: JobListItem; now: Date }) {
       <CompanyLogo company={job.company} />
       <div className="min-w-0 flex-1">
         <div className="flex items-start gap-2">
-          <h3 className="min-w-0 flex-1 text-base font-medium leading-snug">
+          <h2 className="min-w-0 flex-1 text-base font-medium leading-snug">
             <Link
               href={jobHref(job.slug)}
               className="hover:text-accent after:absolute after:inset-0"
             >
               {job.title}
             </Link>
-          </h3>
+          </h2>
           <div className="relative z-10 shrink-0">
             <SaveButton
               job={{
@@ -40,7 +40,7 @@ export function JobRow({ job, now }: { job: JobListItem; now: Date }) {
         <p className="mt-0.5 flex flex-wrap items-center gap-x-1.5 text-sm text-text-muted">
           <Link
             href={companyHref(job.company.slug)}
-            className="relative z-10 text-text hover:underline underline-offset-2"
+            className="relative z-10 inline-flex min-h-6 items-center text-text hover:underline underline-offset-2"
           >
             {job.company.name}
           </Link>

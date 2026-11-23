@@ -15,7 +15,8 @@ export function CompanyLogo({
 }) {
   const { c } = useTheme();
   const [failed, setFailed] = useState(false);
-  const src = logoUrl ?? (domain ? `https://icons.duckduckgo.com/ip3/${domain}.ico` : null);
+  const src =
+    logoUrl ?? (domain ? `https://www.google.com/s2/favicons?domain=${domain}&sz=64` : null);
   const box = {
     width: size,
     height: size,
