@@ -43,6 +43,6 @@ describe('filtersToQuery', () => {
     expect(filtersToQuery({ city: 'pune', q: 'go', level: undefined })).toBe('q=go&city=pune');
   });
   it('counts active filters', () => {
-    expect(activeFilterCount({ q: 'x', city: 'pune', limit: 30 })).toBe(2);
+    expect(activeFilterCount({ q: 'x', city: 'pune', level: undefined })).toBe(2);
   });
 });

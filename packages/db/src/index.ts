@@ -18,3 +18,4 @@ export {
   asc,
   count,
 } from 'drizzle-orm';
+export * from './queries';

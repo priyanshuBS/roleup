@@ -9,3 +9,5 @@ packages/db/drizzle
 **/fixtures/*.json
 packages/ui-tokens/src/tokens.css
 data/cities.json
+apps/web/.next
+apps/web/next-env.d.ts

@@ -110,6 +110,6 @@ export function filtersToQuery(
   return params.toString();
 }
 
-export function activeFilterCount(filters: Partial<JobFilters>): number {
+export function activeFilterCount(filters: Partial<Record<FilterKey, unknown>>): number {
   return FILTER_KEYS.filter((k) => filters[k] !== undefined && filters[k] !== '').length;
 }

@@ -31,3 +31,16 @@ Choices made where the brief was ambiguous or where a constraint forced a call. 
 - **YC matching** uses the registrable domain (`about.gitlab.com` → `gitlab.com`), then normalized name, and refuses a name match when the websites disagree. Batches are stored as codes: W15, S16, X25 (Spring), F24 (Fall).
 - **ATS detection** reads the careers URL itself first (it may already be a board), then fetches the page if robots.txt allows. A detected board is saved only if it actually responds. Pages that render jobs client-side won't be detected; set the ATS manually in admin.
 - **Local PGlite needs `DB_POOL_MAX=1`**: the socket server runs a single engine, and concurrent connections interleave protocol messages. Neon has no such limit.
+
+## Web
+
+- **Caching.** List pages read filters from the query string, so they render per request, but every DB read goes through `unstable_cache` (10 min, keyed by filters). Job detail pages are ISR (`revalidate = 600`, generated on first visit). API responses send `Cache-Control: public, s-maxage=300, stale-while-revalidate=600`. A production build needs `DATABASE_URL`, since `/about` and `/sitemap.xml` prerender from the DB.
+- **Ordering** is always newest first (`posted_at desc, id desc`) with keyset cursors, including for text search. Relevance ranking would break stable cursors; search narrows rather than ranks.
+- **Pagination on the web** is plain links ("Older jobs" / "Back to newest") with `?cursor=`. This works without JavaScript and is crawlable. Mobile uses infinite scroll on the same cursor.
+- **Filters UI** uses native `<select>`s (accessible, tiny). The only Radix primitive is Dialog, for the mobile bottom sheet.
+- **Logos.** `companies.logo_url` wins. Otherwise the company's favicon via DuckDuckGo's icon service (`no-referrer`), with initials as a fallback. Fixed 28px box, so no layout shift.
+- **JSON-LD** is emitted only for open, India-eligible jobs. `baseSalary` only when the salary is employer-provided; `TELECOMMUTE` only for remote types; remote roles list India in `applicantLocationRequirements`. US/EU-only roles get no JobPosting markup and stay out of the sitemap.
+- **`/remote-jobs`** defaults to "any remote" (including restricted, clearly labelled), and sub-chips switch type. `/remote-jobs-india` is fixed to India OK.
+- **Company directory counts** show India-eligible open jobs next to the total, matching what the default feed shows.
+- **CSP** allows inline scripts (JSON-LD and the pre-paint theme snippet) and `https:` images (logos). No third-party scripts are loaded at all.
+- **ESLint 9.39.** `eslint-config-next` pulls in `eslint-plugin-react`, which doesn't support ESLint 10 yet.

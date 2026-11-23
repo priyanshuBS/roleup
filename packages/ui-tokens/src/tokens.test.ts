@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 
 describe('ui-tokens', () => {
   it('maps token names to css vars', () => {
-    expect(cssVarName('textMuted')).toBe('--color-text-muted');
+    expect(cssVarName('textMuted')).toBe('--ru-text-muted');
   });
   it('light and dark define the same tokens', () => {
     expect(Object.keys(palette.dark).sort()).toEqual(Object.keys(palette.light).sort());
