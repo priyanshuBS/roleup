@@ -7,3 +7,5 @@ dist
 pnpm-lock.yaml
 packages/db/drizzle
 **/fixtures/*.json
+packages/ui-tokens/src/tokens.css
+data/cities.json

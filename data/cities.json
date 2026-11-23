@@ -4,28 +4,52 @@
     "slug": "bengaluru",
     "state": "Karnataka",
     "country": "IN",
-    "aliases": ["bengaluru", "bangalore", "banglore", "bengalore", "blr", "bangalore urban"]
+    "aliases": [
+      "bengaluru",
+      "bangalore",
+      "banglore",
+      "bengalore",
+      "blr",
+      "bangalore urban"
+    ]
   },
   {
     "name": "Hyderabad",
     "slug": "hyderabad",
     "state": "Telangana",
     "country": "IN",
-    "aliases": ["hyderabad", "secunderabad", "hyd", "hitec city", "gachibowli"]
+    "aliases": [
+      "hyderabad",
+      "secunderabad",
+      "hyd",
+      "hitec city",
+      "gachibowli"
+    ]
   },
   {
     "name": "Pune",
     "slug": "pune",
     "state": "Maharashtra",
     "country": "IN",
-    "aliases": ["pune", "poona", "hinjewadi"]
+    "aliases": [
+      "pune",
+      "poona",
+      "hinjewadi"
+    ]
   },
   {
     "name": "Mumbai",
     "slug": "mumbai",
     "state": "Maharashtra",
     "country": "IN",
-    "aliases": ["mumbai", "bombay", "navi mumbai", "thane", "powai", "bkc"]
+    "aliases": [
+      "mumbai",
+      "bombay",
+      "navi mumbai",
+      "thane",
+      "powai",
+      "bkc"
+    ]
   },
   {
     "name": "Delhi NCR",
@@ -50,118 +74,168 @@
     "slug": "chennai",
     "state": "Tamil Nadu",
     "country": "IN",
-    "aliases": ["chennai", "madras"]
+    "aliases": [
+      "chennai",
+      "madras"
+    ]
   },
   {
     "name": "Kolkata",
     "slug": "kolkata",
     "state": "West Bengal",
     "country": "IN",
-    "aliases": ["kolkata", "calcutta"]
+    "aliases": [
+      "kolkata",
+      "calcutta"
+    ]
   },
   {
     "name": "Ahmedabad",
     "slug": "ahmedabad",
     "state": "Gujarat",
     "country": "IN",
-    "aliases": ["ahmedabad", "amdavad"]
+    "aliases": [
+      "ahmedabad",
+      "amdavad"
+    ]
   },
   {
     "name": "Gandhinagar",
     "slug": "gandhinagar",
     "state": "Gujarat",
     "country": "IN",
-    "aliases": ["gandhinagar", "gift city"]
+    "aliases": [
+      "gandhinagar",
+      "gift city"
+    ]
   },
   {
     "name": "Jaipur",
     "slug": "jaipur",
     "state": "Rajasthan",
     "country": "IN",
-    "aliases": ["jaipur"]
+    "aliases": [
+      "jaipur"
+    ]
   },
   {
     "name": "Kochi",
     "slug": "kochi",
     "state": "Kerala",
     "country": "IN",
-    "aliases": ["kochi", "cochin", "ernakulam"]
+    "aliases": [
+      "kochi",
+      "cochin",
+      "ernakulam"
+    ]
   },
   {
     "name": "Thiruvananthapuram",
     "slug": "thiruvananthapuram",
     "state": "Kerala",
     "country": "IN",
-    "aliases": ["thiruvananthapuram", "trivandrum", "technopark"]
+    "aliases": [
+      "thiruvananthapuram",
+      "trivandrum",
+      "technopark"
+    ]
   },
   {
     "name": "Coimbatore",
     "slug": "coimbatore",
     "state": "Tamil Nadu",
     "country": "IN",
-    "aliases": ["coimbatore"]
+    "aliases": [
+      "coimbatore"
+    ]
   },
   {
     "name": "Indore",
     "slug": "indore",
     "state": "Madhya Pradesh",
     "country": "IN",
-    "aliases": ["indore"]
+    "aliases": [
+      "indore"
+    ]
   },
   {
     "name": "Chandigarh",
     "slug": "chandigarh",
     "state": "Chandigarh",
     "country": "IN",
-    "aliases": ["chandigarh", "mohali", "panchkula", "tricity"]
+    "aliases": [
+      "chandigarh",
+      "mohali",
+      "panchkula",
+      "tricity"
+    ]
   },
   {
     "name": "Mysuru",
     "slug": "mysuru",
     "state": "Karnataka",
     "country": "IN",
-    "aliases": ["mysuru", "mysore"]
+    "aliases": [
+      "mysuru",
+      "mysore"
+    ]
   },
   {
     "name": "Bhubaneswar",
     "slug": "bhubaneswar",
     "state": "Odisha",
     "country": "IN",
-    "aliases": ["bhubaneswar"]
+    "aliases": [
+      "bhubaneswar"
+    ]
   },
   {
     "name": "Nagpur",
     "slug": "nagpur",
     "state": "Maharashtra",
     "country": "IN",
-    "aliases": ["nagpur"]
+    "aliases": [
+      "nagpur"
+    ]
   },
   {
     "name": "Goa",
     "slug": "goa",
     "state": "Goa",
     "country": "IN",
-    "aliases": ["goa", "panaji", "panjim"]
+    "aliases": [
+      "goa",
+      "panaji",
+      "panjim"
+    ]
   },
   {
     "name": "Vadodara",
     "slug": "vadodara",
     "state": "Gujarat",
     "country": "IN",
-    "aliases": ["vadodara", "baroda"]
+    "aliases": [
+      "vadodara",
+      "baroda"
+    ]
   },
   {
     "name": "Lucknow",
     "slug": "lucknow",
     "state": "Uttar Pradesh",
     "country": "IN",
-    "aliases": ["lucknow"]
+    "aliases": [
+      "lucknow"
+    ]
   },
   {
     "name": "Visakhapatnam",
     "slug": "visakhapatnam",
     "state": "Andhra Pradesh",
     "country": "IN",
-    "aliases": ["visakhapatnam", "vizag"]
+    "aliases": [
+      "visakhapatnam",
+      "vizag"
+    ]
   }
 ]
