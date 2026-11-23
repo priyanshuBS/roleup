@@ -59,3 +59,14 @@ Choices made where the brief was ambiguous or where a constraint forced a call. 
 - **Auth**: a single `ADMIN_TOKEN` (16+ chars; admin is disabled otherwise). Signing in sets an httpOnly, SameSite=Strict cookie holding an HMAC of the token, not the token. Comparisons are constant-time. Login is limited to 5 attempts per 15 minutes per IP, and admin pages/actions to 300 requests per minute.
 - **Mutations are Server Actions** (zod-validated) and call `updateTag('jobs'|'funding')`, so public pages reflect changes on the next request.
 - **"Trigger ATS detection"** queues the company (`ats_detect_requested_at`); the next `detect-ats` run (daily workflow, or `pnpm detect-ats`) handles it. Detection does network I/O with robots.txt checks, which belongs in the worker, not a request handler.
+
+## ATS checker
+
+- **Engine** is pure TS in `packages/core/src/ats-checker`. It takes extracted text plus layout signals from the parser, so every rule is unit-tested without real files. Weights: parseability 20, contact 10, sections 15, layout 10, length 8, dates 8, bullets & impact 14, wording 8, file 7 (total 100). Scanned/image-only files are capped at 20.
+- **Keyword match is reported separately** (matched / missing / %) and doesn't change the ATS score. The score is about machine-readability; the match is about fit. Mixing them would make both less useful.
+- **Experience years** come only from date ranges inside the Experience section, so degree dates don't inflate them. They drive the 1-page (<5 years) / 2-page rule.
+- **PDF parsing** uses `unpdf` text items with positions. Multi-column detection looks for a recurring horizontal gap and many lines starting right of centre, and text is re-ordered left column first. Contact details only in the top/bottom 5% of the page count as "in header/footer". `inspectPages` image coverage detects scanned pages. Only the first 10 pages are analysed.
+- **DOCX** uses mammoth (raw text, plus HTML for table/image counts). Word header/footer contents aren't exposed by mammoth, so that check only applies to PDFs.
+- **File type is sniffed from bytes** (`%PDF-`, or a ZIP containing `word/document.xml`), never from the name or MIME type. The limit is 5 MB, enforced on Content-Length and on the parsed file.
+- **Privacy**: the upload is read into memory, parsed, scored and dropped. No disk writes, no storage, and only error _types_ are logged. The rate limit is 10 checks per hour per salted IP hash, stored in Postgres.
+- **Skills dictionary** (`packages/core/src/skills.ts`, ~150 skills) avoids aliases that collide with plain English ("rest", "spring", "cv", "excel"). Single-letter languages (C, R) and Go match only in list-like contexts.

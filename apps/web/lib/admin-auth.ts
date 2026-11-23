@@ -1,7 +1,9 @@
 import { createHash, createHmac, timingSafeEqual } from 'node:crypto';
-import { cookies, headers } from 'next/headers';
+import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { getDb, hitRateLimit } from '@roleup/db';
+import { rateLimit } from './rate-limit';
+
+export { rateLimit };
 
 export const ADMIN_COOKIE = 'roleup_admin';
 
@@ -48,18 +50,6 @@ export async function setAdminSession() {
 
 export async function clearAdminSession() {
   (await cookies()).delete(ADMIN_COOKIE);
-}
-
-/** Salted hash of the client IP for rate-limit keys. Raw IPs are never stored. */
-export async function clientKey(scope: string): Promise<string> {
-  const h = await headers();
-  const ip = (h.get('x-forwarded-for')?.split(',')[0] ?? h.get('x-real-ip') ?? 'unknown').trim();
-  const salt = process.env.ADMIN_TOKEN || process.env.DATABASE_URL || 'roleup';
-  return `${scope}:${createHash('sha256').update(`${salt}|${ip}`).digest('hex').slice(0, 32)}`;
-}
-
-export async function rateLimit(scope: string, limit: number, windowSeconds: number) {
-  return hitRateLimit(getDb(), await clientKey(scope), limit, windowSeconds);
 }
 
 /** For admin pages and actions: redirect to login unless signed in; throttle by IP. */
