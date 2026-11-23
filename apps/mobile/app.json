@@ -1,0 +1,26 @@
+{
+  "expo": {
+    "name": "RoleUp",
+    "slug": "roleup",
+    "scheme": "roleup",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "jsEngine": "hermes",
+    "newArchEnabled": true,
+    "backgroundColor": "#FAFAF8",
+    "ios": {
+      "bundleIdentifier": "app.roleup.jobs",
+      "supportsTablet": false,
+      "config": { "usesNonExemptEncryption": false }
+    },
+    "android": {
+      "package": "app.roleup.jobs",
+      "edgeToEdgeEnabled": true,
+      "permissions": []
+    },
+    "plugins": ["expo-router", "expo-web-browser"],
+    "experiments": { "typedRoutes": true },
+    "extra": { "router": {} }
+  }
+}

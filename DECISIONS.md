@@ -70,3 +70,14 @@ Choices made where the brief was ambiguous or where a constraint forced a call. 
 - **File type is sniffed from bytes** (`%PDF-`, or a ZIP containing `word/document.xml`), never from the name or MIME type. The limit is 5 MB, enforced on Content-Length and on the parsed file.
 - **Privacy**: the upload is read into memory, parsed, scored and dropped. No disk writes, no storage, and only error _types_ are logged. The rate limit is 10 checks per hour per salted IP hash, stored in Postgres.
 - **Skills dictionary** (`packages/core/src/skills.ts`, ~150 skills) avoids aliases that collide with plain English ("rest", "spring", "cv", "excel"). Single-letter languages (C, R) and Go match only in list-like contexts.
+
+## Mobile
+
+- **Expo SDK 58 / React Native 0.88 / React 19.3.0**, exact versions from `expo/bundledNativeModules.json`. The web app's React 19.3.1 lives in its own package and pnpm isolates the two.
+- **Dependencies kept to the brief**: expo-router, react-query, AsyncStorage, expo-web-browser, expo-document-picker, safe-area-context, screens. No UI kit, no icon font (tab bar uses text labels), no animation library, no analytics. Hermes and the New Architecture are on. The Android bundle exports at ~2.7 MB of Hermes bytecode.
+- **`@roleup/core/lite`** exposes only constants, DTO types and formatters, so the app doesn't bundle the classifiers or the ATS engine.
+- **Lists** use fixed-height rows (`layout.jobRowHeight`) with `getItemLayout`, `windowSize=7` and `removeClippedSubviews`. Skeleton rows show on first load, with pull-to-refresh and cursor infinite scroll.
+- **Offline**: the default Latest feed's first 60 jobs are cached in AsyncStorage and shown on cold start (labelled "Showing jobs saved X ago") until fresh data arrives, or when offline.
+- **Explore** opens a generic filtered list screen. The last 6 opened filters are remembered on device as "Recent".
+- **Resume upload** sends `{ uri, name, type }` in `FormData` (React Native's file form) to the same `/api/v1/ats-check` endpoint the website uses.
+- `EXPO_PUBLIC_API_URL` is set per EAS profile in `eas.json`. Replace the placeholder domain before building.
