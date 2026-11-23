@@ -1,136 +1,277 @@
 # RoleUp
 
-Tech jobs in India and remote-from-India, read straight from company job boards (Greenhouse, Lever, Ashby). It has a website, a lightweight mobile app, and a free ATS resume checker. There are no accounts; saved jobs stay on the device.
+**Tech jobs in India and remote, straight from company career pages.**
+
+RoleUp reads public job boards (Greenhouse, Lever, Ashby) every 6 hours, keeps only tech roles, and labels each one by city, level, salary band and whether a remote role is open to India. Every Apply button goes to the employer's own site.
+
+No accounts. No ads. Saved jobs stay on your device, and resumes are never stored.
+
+---
+
+## Contents
+
+- [Features](#features)
+- [Tech stack](#tech-stack)
+- [Project structure](#project-structure)
+- [Quick start](#quick-start)
+- [Environment variables](#environment-variables)
+- [Commands](#commands)
+- [Admin panel](#admin-panel)
+- [Public API](#public-api)
+- [Deployment](#deployment)
+- [Data sources and privacy](#data-sources-and-privacy)
+
+---
+
+## Features
+
+|                        |                                                                                                                                     |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| **Latest jobs**        | Newest-first feed with "posted" and "last checked" times                                                                            |
+| **Filters**            | Search, role, level, city, work mode, salary band, company type, posted within. All filters live in the URL, so links are shareable |
+| **Remote, done right** | Split into _India OK_, _Global_ and _US/EU only_. US/EU-only roles are hidden unless you ask for them                               |
+| **Salary bands**       | `<10L`, `10–20L`, `20–40L`, `40–70L`, `70L+`. Employer-posted salaries only; never estimated                                        |
+| **Companies & YC**     | Company pages, and YC startups filterable by batch (W15, S20…)                                                                      |
+| **Recently funded**    | Funding rounds from public news, approved by a person before they appear                                                            |
+| **ATS resume checker** | Upload a PDF/DOCX and get a 0–100 score, the fixes that matter most, and keyword match against any job                              |
+| **Saved jobs**         | Stored in the browser (or on your phone); no login                                                                                  |
+| **Mobile app**         | Expo app with Latest, Explore, Saved, ATS Check and About tabs                                                                      |
+| **Admin**              | Funding review, company management, crawl health, and visitor analytics                                                             |
+
+## Tech stack
+
+- **Monorepo**: pnpm workspaces + Turborepo, TypeScript (strict)
+- **Web**: Next.js 16 (App Router), Tailwind CSS v4, Radix Dialog
+- **Mobile**: Expo SDK 58, expo-router, React Query
+- **Database**: Neon Postgres, Drizzle ORM, Postgres full-text search
+- **Workers**: TypeScript scripts run by GitHub Actions on a schedule
+- **Tests**: Vitest, with recorded real API responses as fixtures
+
+## Project structure
 
 ```
-apps/web        Next.js 16 site, public API (/api/v1/*), admin panel
-apps/mobile     Expo (React Native) app using the public API
-packages/db     Drizzle schema, migrations, queries, Neon/pg client
-packages/core   Shared types, constants, classifiers, ATS checker engine, skills dictionary
-packages/ui-tokens  Colours, spacing and type shared by web (Tailwind) and mobile
-workers         crawl-jobs, sync-yc, track-funding, detect-ats (run by GitHub Actions)
-data            companies.seed.csv, cities.json
+roleup/
+├── apps/
+│   ├── web/            Website, public API (/api/v1) and admin panel
+│   └── mobile/         Expo app (uses the public API)
+├── packages/
+│   ├── core/           Shared types, constants, classifiers, ATS checker, skills list
+│   ├── db/             Database schema, migrations and queries
+│   └── ui-tokens/      Colours, spacing and type shared by web and mobile
+├── workers/            Job crawler, YC sync, funding tracker, ATS detection
+├── data/               Seed companies (CSV) and cities
+├── .github/workflows/  CI and scheduled workers
+└── DECISIONS.md        Why things are built the way they are
 ```
 
-Design and product decisions, with the reasons behind them, are in [DECISIONS.md](DECISIONS.md).
+---
 
-## Run locally
+## Quick start
 
-Requirements: Node 24+, pnpm 10.
+**You need:** Node.js 24+, pnpm 10, and a free [Neon](https://neon.tech) database.
+
+### 1. Install and configure
 
 ```bash
 pnpm install
-cp .env.example .env            # then edit; see below
+cp .env.example .env
 ```
 
-**Database.** Either use a Neon branch (put its URLs in `.env`), or run the bundled local Postgres (PGlite, no Docker needed) in a separate terminal:
+Open `.env` and fill in the [environment variables](#environment-variables). At minimum you need `DATABASE_URL`, `DATABASE_URL_UNPOOLED` and `ADMIN_TOKEN`.
+
+### 2. Set up the database and load jobs
 
 ```bash
-pnpm db:local                   # Postgres on 127.0.0.1:5433, data in ./.pglite
-# .env:
-#   DATABASE_URL=postgres://postgres:postgres@127.0.0.1:5433/postgres
-#   DB_POOL_MAX=1               # required for PGlite (single connection)
+pnpm db:migrate      # create tables
+pnpm db:seed         # add cities and 48 starter companies
+pnpm crawl           # fetch jobs (~20 seconds)
+pnpm sync-yc         # tag Y Combinator companies
+pnpm track-funding   # queue funding news for review (optional)
 ```
 
-Then:
+### 3. Start the website
 
 ```bash
-pnpm db:migrate                 # create tables, indexes, FTS trigger
-pnpm db:seed                    # cities + 48 seed companies
-pnpm crawl                      # fetch jobs (~20s)
-pnpm sync-yc                    # tag YC companies
-pnpm track-funding              # queue funding news for review
-pnpm --filter @roleup/web dev   # http://localhost:3000
+pnpm --filter @roleup/web dev
 ```
 
-Admin is at `/admin` and needs `ADMIN_TOKEN` (16+ characters) in `.env`.
+Open **http://localhost:3000**. The admin panel is at **http://localhost:3000/admin**.
 
-**Mobile.** Point it at your machine's LAN IP, not `localhost`, when using a phone:
+### 4. Run the mobile app (optional)
+
+Keep the website running. Find your computer's Wi-Fi IP (`ipconfig` on Windows), then:
 
 ```bash
-EXPO_PUBLIC_API_URL=http://192.168.1.20:3000 pnpm --filter @roleup/mobile start
+cd apps/mobile
+EXPO_PUBLIC_API_URL=http://<your-ip>:3000 npx expo start
 ```
 
-**Checks:**
+Scan the QR code with **Expo Go** (phone on the same Wi-Fi). On the Android emulator, use `http://10.0.2.2:3000`.
+
+On Windows PowerShell, set the variable first: `$env:EXPO_PUBLIC_API_URL="http://<your-ip>:3000"; npx expo start`
+
+<details>
+<summary><strong>No Neon account? Use the built-in local database</strong></summary>
+
+RoleUp ships with a local Postgres (PGlite) that needs no Docker. In a separate terminal:
 
 ```bash
-pnpm check                      # typecheck + lint + tests across the monorepo
-pnpm --filter @roleup/workers verify-seed   # re-verify every seed board against the live APIs
+pnpm db:local
 ```
 
-### Useful worker commands
+Then in `.env`:
 
-| Command                                                | What it does                                                   |
-| ------------------------------------------------------ | -------------------------------------------------------------- |
-| `pnpm crawl [-- --company stripe]`                     | Crawl all boards (or one), upsert jobs, close removed ones     |
-| `pnpm sync-yc`                                         | Match companies to YC's public list, set `yc` tag + batch      |
-| `pnpm track-funding [-- --dry-run]`                    | Read funding RSS, queue extracted rounds as `pending`          |
-| `pnpm detect-ats [-- --url https://acme.com/careers]`  | Find a company's Greenhouse/Lever/Ashby board                  |
-| `pnpm --filter @roleup/workers verify-seed -- --write` | Drop seed companies with no India-eligible tech jobs           |
-| `pnpm db:generate`                                     | Generate a migration after editing `packages/db/src/schema.ts` |
+```
+DATABASE_URL=postgres://postgres:postgres@127.0.0.1:5433/postgres
+DB_POOL_MAX=1
+```
 
-## Deploy
+`DB_POOL_MAX=1` is required for the local database only. Remove it when you switch to Neon.
 
-### 1. Neon (database)
+</details>
 
-1. Create a Neon project, region `aws-ap-southeast-1` (Singapore) or the closest to Mumbai.
-2. Copy two connection strings from the dashboard:
-   - **Pooled** (host contains `-pooler`) → `DATABASE_URL`
-   - **Direct** → `DATABASE_URL_UNPOOLED` (migrations only)
-3. From your machine, with those in `.env`: `pnpm db:migrate && pnpm db:seed && pnpm crawl && pnpm sync-yc`.
+---
 
-### 2. Vercel (website + API)
+## Environment variables
 
-1. Import the GitHub repo in Vercel. Set **Root Directory** to `apps/web`. Vercel detects Next.js and pnpm and installs from the repo root.
-2. Environment variables (Production and Preview):
-   - `DATABASE_URL`: Neon pooled URL
-   - `ADMIN_TOKEN`: long random string (`openssl rand -hex 32`)
-   - `NEXT_PUBLIC_SITE_URL`: e.g. `https://roleup.in`
-   - `USD_INR_RATE`: e.g. `84`
-3. Deploy. The build reads the database (`/about` and the sitemap are prerendered), so the DB must be migrated and seeded first.
-4. Add your domain, then check `https://<domain>/sitemap.xml` and submit it in Google Search Console.
+All apps read the single `.env` file at the repo root.
 
-### 3. GitHub Actions (workers)
+| Variable                | Required | What it's for                                                                              | Production      |
+| ----------------------- | :------: | ------------------------------------------------------------------------------------------ | --------------- |
+| `DATABASE_URL`          |    ✅    | Neon **pooled** connection (host contains `-pooler`). Used by the website, API and workers | Vercel + GitHub |
+| `DATABASE_URL_UNPOOLED` |    ✅    | Neon **direct** connection. Used only for migrations                                       | GitHub          |
+| `ADMIN_TOKEN`           |    ✅    | Password for `/admin`. **Must be 16+ characters**, or admin stays disabled                 | Vercel + GitHub |
+| `NEXT_PUBLIC_SITE_URL`  |    ✅    | Your site's address, e.g. `https://roleup.in`                                              | Vercel + GitHub |
+| `USD_INR_RATE`          |    —     | Dollar-to-rupee rate for salaries and funding (default `84`)                               | Vercel + GitHub |
+| `CRAWLER_CONTACT_EMAIL` |    —     | Contact shown in the crawler's User-Agent so job boards can reach you                      | GitHub          |
+| `EXPO_PUBLIC_API_URL`   |    —     | Website address the mobile app talks to                                                    | `eas.json`      |
+| `DB_POOL_MAX`           |    —     | Local PGlite database only (`1`). Leave unset with Neon                                    | Never           |
 
-`.github/workflows/crawl.yml` runs `crawl-jobs` every 6 hours, and `sync-yc`, `track-funding` and `detect-ats` daily at 08:11 IST. Each run applies migrations and seeds first (both idempotent), then pings the site to refresh caches.
-
-In **Settings → Secrets and variables → Actions**:
-
-| Name                    | Kind     | Value                                        |
-| ----------------------- | -------- | -------------------------------------------- |
-| `DATABASE_URL`          | secret   | Neon pooled URL                              |
-| `DATABASE_URL_UNPOOLED` | secret   | Neon direct URL                              |
-| `ADMIN_TOKEN`           | secret   | same as Vercel                               |
-| `CRAWLER_CONTACT_EMAIL` | secret   | a contact address for the crawler User-Agent |
-| `SITE_URL`              | variable | e.g. `https://roleup.in`                     |
-| `USD_INR_RATE`          | variable | e.g. `84`                                    |
-
-Run it once by hand: **Actions → Workers → Run workflow → all**. CI (`ci.yml`) runs typecheck, lint and tests on every push.
-
-### 4. EAS (mobile)
+Generate a strong admin token with:
 
 ```bash
-npm i -g eas-cli
+openssl rand -hex 24
+```
+
+---
+
+## Commands
+
+Run from the repo root.
+
+| Command                                     | What it does                                                              |
+| ------------------------------------------- | ------------------------------------------------------------------------- |
+| `pnpm --filter @roleup/web dev`             | Start the website on port 3000                                            |
+| `pnpm check`                                | Typecheck, lint and run all tests                                         |
+| `pnpm db:migrate`                           | Apply database migrations                                                 |
+| `pnpm db:seed`                              | Add or update cities and seed companies (safe to re-run)                  |
+| `pnpm db:generate`                          | Create a migration after editing `packages/db/src/schema.ts`              |
+| `pnpm crawl`                                | Crawl every company's job board, add new jobs, close removed ones         |
+| `pnpm crawl -- --company stripe`            | Crawl one company                                                         |
+| `pnpm sync-yc`                              | Tag companies that went through Y Combinator                              |
+| `pnpm track-funding`                        | Read funding news and queue rounds for review (`-- --dry-run` to preview) |
+| `pnpm detect-ats`                           | Find job boards for companies queued in admin                             |
+| `pnpm detect-ats -- --url <careers-url>`    | Test detection on any careers page                                        |
+| `pnpm --filter @roleup/workers verify-seed` | Re-check every seed company against the live APIs                         |
+
+---
+
+## Admin panel
+
+Sign in at `/admin` with your `ADMIN_TOKEN`.
+
+| Page              | Use it to                                                                                                                                                          |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Overview**      | See the latest worker runs, errors, and companies failing to crawl                                                                                                 |
+| **Analytics**     | Track page views, visitors, clicks, Apply clicks and apply rate, with a daily chart, top pages, most-applied jobs, referrers, devices and countries (7/30/90 days) |
+| **Funding queue** | Check each extracted round against its source, fix details, then approve or reject. Only approved rounds are public                                                |
+| **Companies**     | Add or edit companies, set tags, or queue ATS detection for a careers page                                                                                         |
+
+**About analytics:** it is built in, with no cookies and no third-party scripts. It never stores IP addresses. Visitors are counted once per day with a hash that changes daily. Bots, admin pages and visitors with Do Not Track or Global Privacy Control are excluded.
+
+---
+
+## Public API
+
+Read-only JSON API used by the mobile app. CORS is open; responses are cached for a few minutes.
+
+| Endpoint                      | Returns                                                                                                                                                      |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `GET /api/v1/jobs`            | Jobs, newest first. Accepts every filter (`q`, `category`, `level`, `city`, `remote`, `band`, `tag`, `posted`, `company`, `batch`) plus `cursor` and `limit` |
+| `GET /api/v1/jobs/:id`        | One job by id or slug                                                                                                                                        |
+| `GET /api/v1/companies`       | Companies (`tag`, `city`, `hasJobs`, `q`)                                                                                                                    |
+| `GET /api/v1/companies/:slug` | One company and its open jobs                                                                                                                                |
+| `GET /api/v1/funding`         | Approved funding rounds with each company's open job count                                                                                                   |
+| `GET /api/v1/meta/filters`    | Cities, categories, levels, salary bands, tags and YC batches with counts                                                                                    |
+| `POST /api/v1/ats-check`      | Resume check (multipart: `file`, optional `jd` or `job`). 10 checks/hour                                                                                     |
+
+Example:
+
+```bash
+curl "http://localhost:3000/api/v1/jobs?city=bengaluru&category=backend&limit=5"
+```
+
+---
+
+## Deployment
+
+### 1. Database (Neon)
+
+1. Create a Neon project in **Singapore** (`aws-ap-southeast-1`), the closest region to India.
+2. Copy the **pooled** and **direct** connection strings into `.env`.
+3. Load the data: `pnpm db:migrate && pnpm db:seed && pnpm crawl && pnpm sync-yc`
+
+### 2. Website (Vercel)
+
+1. Import the GitHub repo and set **Root Directory** to `apps/web`.
+2. Add environment variables: `DATABASE_URL`, `ADMIN_TOKEN`, `NEXT_PUBLIC_SITE_URL`, `USD_INR_RATE`.
+3. Deploy. The database must be set up first, since some pages are built from it.
+4. Add your domain and submit `https://<your-domain>/sitemap.xml` in Google Search Console.
+
+### 3. Scheduled workers (GitHub Actions)
+
+The **Workers** workflow crawls jobs every 6 hours and runs the YC sync, funding tracker and ATS detection daily. Each run applies migrations first and refreshes the site's cache afterwards.
+
+In **Settings → Secrets and variables → Actions**, add:
+
+| Name                    | Type     | Value                         |
+| ----------------------- | -------- | ----------------------------- |
+| `DATABASE_URL`          | Secret   | Neon pooled URL               |
+| `DATABASE_URL_UNPOOLED` | Secret   | Neon direct URL               |
+| `ADMIN_TOKEN`           | Secret   | Same as Vercel                |
+| `CRAWLER_CONTACT_EMAIL` | Secret   | Contact email for the crawler |
+| `SITE_URL`              | Variable | e.g. `https://roleup.in`      |
+| `USD_INR_RATE`          | Variable | e.g. `84`                     |
+
+Then run it once: **Actions → Workers → Run workflow → all**. The **CI** workflow checks every push automatically.
+
+### 4. Mobile app (EAS)
+
+```bash
+npm install -g eas-cli
 cd apps/mobile
 eas login
-eas init                         # links the project, writes the EAS project id
-# set your real domain in eas.json → build.*.env.EXPO_PUBLIC_API_URL
-eas build --platform android --profile preview      # installable APK for testing
-eas build --platform all --profile production
-eas submit --platform android    # / ios, once store listings exist
+eas init
 ```
 
-Bundle identifiers are `app.roleup.jobs` (iOS and Android). Change them in `app.json` before the first store build if you want a different one.
+Set your real website address in `apps/mobile/eas.json` (`EXPO_PUBLIC_API_URL`), then:
 
-## Daily operations
+```bash
+eas build --platform android --profile preview   # installable APK for testing
+eas build --platform all --profile production    # store builds
+eas submit --platform android                    # publish (and --platform ios)
+```
 
-- **Funding queue**: `/admin/funding`. Check each entry against its source, fix the company/round/amount, then approve or reject. Only approved rounds are public.
-- **Add a company**: `/admin/companies`. Enter the careers URL and either set the ATS + board slug, or leave ATS as `none` and click "Queue ATS detection". The board is crawled on the next run.
-- **Crawl health**: `/admin` lists the last worker runs and any companies failing to crawl (`invalid_slug` means the board no longer exists).
+The app id is `app.roleup.jobs`. Change it in `app.json` before your first store build if you want a different one.
 
-## Data sources and rules
+---
 
-- Jobs come only from public ATS board APIs. We never scrape LinkedIn, Naukri, Indeed, Glassdoor or any logged-in page, and every Apply button goes to the employer's own page.
-- YC tags come from the community YC company list (`yc-oss.github.io`); only the batch and domain are stored.
-- Funding: public RSS feeds (ET Tech, Inc42, TechCrunch). Only facts and the source link are stored, and a person reviews every entry.
-- Resumes are processed in memory and never stored or logged.
+## Data sources and privacy
+
+- **Jobs** come only from public ATS job-board APIs. RoleUp never scrapes LinkedIn, Naukri, Indeed, Glassdoor or any page behind a login.
+- **YC tags** come from the public community YC company list. Only the batch and domain are stored.
+- **Funding** comes from public news feeds (Economic Times, Inc42, TechCrunch). Only facts and the source link are kept, and every entry is reviewed before it is shown.
+- **Resumes** are read in memory, scored and discarded. They are never saved or logged.
+- **Analytics** are first-party and cookieless, with no IPs stored (see [Admin panel](#admin-panel)).
+
+For the reasoning behind these choices, see [DECISIONS.md](DECISIONS.md).
