@@ -51,3 +51,15 @@ export function initials(name: string): string {
     .filter(Boolean);
   return ((parts[0]?.[0] ?? '') + (parts[1]?.[0] ?? '')).toUpperCase() || '?';
 }
+
+/** "2026-10-12" -> "12 Oct 2026". Date-only strings are formatted in UTC so the day never shifts. */
+export function formatDate(isoDate: string): string {
+  const d = new Date(/^\d{4}-\d{2}-\d{2}$/.test(isoDate) ? `${isoDate}T00:00:00Z` : isoDate);
+  if (Number.isNaN(d.getTime())) return isoDate;
+  return d.toLocaleDateString('en-IN', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    timeZone: 'UTC',
+  });
+}

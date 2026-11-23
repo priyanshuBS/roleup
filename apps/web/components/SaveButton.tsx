@@ -21,14 +21,16 @@ export function SaveButton({
       title={label}
       className={
         withLabel
-          ? 'btn'
-          : 'p-2 -m-1 rounded-sm text-text-subtle hover:text-text hover:bg-surface-muted'
+          ? `btn ${saved ? '!text-accent' : ''}`
+          : `inline-flex h-9 w-9 items-center justify-center rounded-md transition-colors ${
+              saved ? 'text-accent' : 'text-text-subtle hover:bg-surface hover:text-text'
+            }`
       }
     >
       {saved ? (
-        <BookmarkCheck size={16} className="text-accent" aria-hidden />
+        <BookmarkCheck size={17} aria-hidden strokeWidth={2.2} />
       ) : (
-        <Bookmark size={16} aria-hidden />
+        <Bookmark size={17} aria-hidden />
       )}
       {withLabel && <span>{saved ? 'Saved' : 'Save'}</span>}
     </button>

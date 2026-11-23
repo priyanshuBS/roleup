@@ -52,7 +52,7 @@ export function DailyChart({ data }: { data: Row[] }) {
   return (
     <div>
       <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
-        <h2 className="text-md font-semibold">
+        <h2 className="display text-lg">
           {LABEL[metric]} per day{' '}
           <span className="font-normal text-text-subtle tabular-nums">
             · {total.toLocaleString('en-IN')} total
@@ -61,7 +61,7 @@ export function DailyChart({ data }: { data: Row[] }) {
         <div
           role="radiogroup"
           aria-label="Metric"
-          className="inline-flex rounded-md border border-border-strong p-0.5 text-sm"
+          className="inline-flex rounded-full border border-border bg-surface p-1 text-sm"
         >
           {(Object.keys(LABEL) as Metric[]).map((m) => (
             <button
@@ -70,7 +70,7 @@ export function DailyChart({ data }: { data: Row[] }) {
               role="radio"
               aria-checked={metric === m}
               onClick={() => setMetric(m)}
-              className={`rounded-sm px-2.5 py-1 ${metric === m ? 'bg-accent-subtle text-accent font-medium' : 'text-text-muted hover:text-text'}`}
+              className={`rounded-full px-3 py-1 ${metric === m ? 'bg-text text-bg font-medium' : 'text-text-muted hover:text-text'}`}
             >
               {LABEL[m]}
             </button>
@@ -157,7 +157,7 @@ export function DailyChart({ data }: { data: Row[] }) {
         {hover !== null && data[hover] && (
           <div
             role="status"
-            className="pointer-events-none absolute top-0 rounded-md border border-border bg-surface px-2.5 py-1.5 text-xs shadow-sm"
+            className="pointer-events-none absolute top-0 card px-2.5 py-1.5 text-xs shadow-sm"
             style={{
               left: `${((pad.l + hover * slot + slot / 2) / W) * 100}%`,
               transform: 'translateX(-50%)',

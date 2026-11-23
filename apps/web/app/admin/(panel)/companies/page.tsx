@@ -3,8 +3,16 @@ import { ATS_PROVIDERS, COMPANY_TAG_LABELS, COMPANY_TAGS, timeAgo } from '@roleu
 import { companies, desc, eq, getDb, type Company } from '@roleup/db';
 import { ActionForm, Field } from '../../ActionForm';
 import { requestAtsDetection, saveCompany } from '../../actions';
+import { requireAdmin } from '@/lib/admin-auth';
 
-type Props = { searchParams: Promise<{ edit?: string; q?: string }> };
+type Props = { searchParams: Promise<{ edit?: string; q?: string; status?: string }> };
+
+const STATUS_FILTERS = [
+  { value: '', label: 'All' },
+  { value: 'live', label: 'Live' },
+  { value: 'failing', label: 'Failing' },
+  { value: 'noboard', label: 'No job board' },
+] as const;
 
 function CompanyForm({ c }: { c?: Company }) {
   const editableTags = COMPANY_TAGS.filter((t) => t !== 'yc' && t !== 'recently_funded');
@@ -12,7 +20,7 @@ function CompanyForm({ c }: { c?: Company }) {
     <ActionForm
       action={saveCompany}
       submitLabel={c ? 'Save company' : 'Add company'}
-      className="rounded-md border border-border bg-surface p-4"
+      className="card p-4"
     >
       {c && <input type="hidden" name="id" value={c.id} />}
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
@@ -25,7 +33,7 @@ function CompanyForm({ c }: { c?: Company }) {
           placeholder="https://"
         />
         <div>
-          <label className="mb-1 block text-xs font-medium text-text-muted">
+          <label className="block text-xs font-medium text-text-muted">
             ATS
             <select name="ats" defaultValue={c?.ats ?? 'none'} className="field mt-1">
               {ATS_PROVIDERS.map((a) => (
@@ -55,9 +63,7 @@ function CompanyForm({ c }: { c?: Company }) {
         />
       </div>
       <fieldset className="mt-3">
-        <legend className="mb-1 text-xs font-medium text-text-muted">
-          Tags (YC and Recently funded are set automatically)
-        </legend>
+        <legend className="field-label">Tags (YC and Recently funded are set automatically)</legend>
         <div className="flex flex-wrap gap-3 text-sm">
           {editableTags.map((t) => (
             <label key={t} className="inline-flex items-center gap-1.5">
@@ -72,13 +78,29 @@ function CompanyForm({ c }: { c?: Company }) {
 }
 
 export default async function AdminCompaniesPage({ searchParams }: Props) {
-  const { edit, q } = await searchParams;
+  await requireAdmin();
+  const { edit, q, status } = await searchParams;
   const db = getDb();
   const list = await db
     .select()
     .from(companies)
     .orderBy(desc(companies.openJobsCount), companies.name);
-  const filtered = q ? list.filter((c) => c.name.toLowerCase().includes(q.toLowerCase())) : list;
+  const filtered = list.filter(
+    (c) =>
+      (!q || c.name.toLowerCase().includes(q.toLowerCase())) &&
+      (status === 'live'
+        ? c.crawlStatus === 'ok' && c.ats !== 'none'
+        : status === 'failing'
+          ? c.crawlStatus === 'error' || c.crawlStatus === 'invalid_slug'
+          : status === 'noboard'
+            ? c.ats === 'none'
+            : true),
+  );
+  // Companies added without a job board (usually from funding news), newest first.
+  const waiting = list
+    .filter((c) => c.ats === 'none')
+    .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+    .slice(0, 30);
   const editing = edit
     ? (await db.select().from(companies).where(eq(companies.slug, edit)))[0]
     : undefined;
@@ -87,7 +109,7 @@ export default async function AdminCompaniesPage({ searchParams }: Props) {
   return (
     <div className="space-y-8">
       <section>
-        <h1 className="mb-3 text-xl font-semibold tracking-tight">
+        <h1 className="mb-3 text-2xl font-semibold tracking-tight">
           {editing ? `Edit ${editing.name}` : 'Add a company'}
         </h1>
         <CompanyForm key={editing?.id ?? 'new'} c={editing} />
@@ -108,10 +130,70 @@ export default async function AdminCompaniesPage({ searchParams }: Props) {
         )}
       </section>
 
+      {!editing && waiting.length > 0 && (
+        <section>
+          <h2 className="text-lg font-semibold">Needs a job board ({waiting.length})</h2>
+          <p className="mt-1 max-w-2xl text-sm text-text-muted">
+            Added without a careers link, usually from funding news. The daily worker looks for
+            their Greenhouse, Lever or Ashby board and website, and only saves a match when the
+            board names the company too. If it can&apos;t find one, add the careers URL yourself.
+          </p>
+          <ul className="mt-4 divide-y divide-border rounded-[var(--radius-lg)] border border-border bg-surface">
+            {waiting.map((c) => (
+              <li key={c.id} className="flex flex-wrap items-start gap-x-4 gap-y-2 p-4">
+                <div className="min-w-0 flex-1">
+                  <p className="font-medium">
+                    {c.name}
+                    <span className="ml-2 text-xs font-normal text-text-subtle">
+                      added {timeAgo(c.createdAt, now)}
+                    </span>
+                  </p>
+                  <p className="mt-0.5 text-sm text-text-muted">
+                    {c.discoveryNote ??
+                      (c.atsDetectRequestedAt
+                        ? 'Queued: will be checked on the next daily run.'
+                        : 'Not checked yet: will be checked on the next daily run.')}
+                    {c.discoveryCheckedAt && (
+                      <span className="text-text-subtle">
+                        {' '}
+                        · {timeAgo(c.discoveryCheckedAt, now)}
+                      </span>
+                    )}
+                  </p>
+                </div>
+                <div className="flex gap-2">
+                  <form action={requestAtsDetection.bind(null, c.id)}>
+                    <button className="btn btn-sm btn-ghost">Retry next run</button>
+                  </form>
+                  <Link href={`/admin/companies?edit=${c.slug}`} className="btn btn-sm">
+                    Add careers URL
+                  </Link>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
       <section>
-        <div className="mb-2 flex items-center justify-between gap-3">
-          <h2 className="text-md font-semibold">All companies ({list.length})</h2>
+        <div className="mb-2 flex flex-wrap items-center justify-between gap-3">
+          <h2 className="text-lg font-semibold">
+            Companies <span className="num font-normal text-text-subtle">{filtered.length}</span>
+          </h2>
+          <nav aria-label="Filter by status" className="flex gap-1 text-sm">
+            {STATUS_FILTERS.map((f) => (
+              <Link
+                key={f.value}
+                href={f.value ? `/admin/companies?status=${f.value}` : '/admin/companies'}
+                aria-current={(status ?? '') === f.value ? 'page' : undefined}
+                className="rounded-md px-2.5 py-1 text-text-muted hover:text-text aria-[current=page]:bg-surface-muted aria-[current=page]:font-medium aria-[current=page]:text-text"
+              >
+                {f.label}
+              </Link>
+            ))}
+          </nav>
           <form className="flex gap-2">
+            {status && <input type="hidden" name="status" value={status} />}
             <label htmlFor="admin-company-q" className="sr-only">
               Filter
             </label>
@@ -124,9 +206,9 @@ export default async function AdminCompaniesPage({ searchParams }: Props) {
             />
           </form>
         </div>
-        <div className="overflow-x-auto rounded-md border border-border bg-surface">
+        <div className="overflow-x-auto card">
           <table className="w-full text-sm">
-            <thead className="text-left text-xs text-text-subtle">
+            <thead className="bg-surface-muted/60 text-left text-xs text-text-subtle">
               <tr className="border-b border-border">
                 <th className="p-2 font-medium">Company</th>
                 <th className="p-2 font-medium">ATS</th>

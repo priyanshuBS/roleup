@@ -2,6 +2,7 @@
 
 import { Moon, Sun } from 'lucide-react';
 import { useSyncExternalStore } from 'react';
+import { palette } from '@roleup/ui-tokens';
 
 type Theme = 'light' | 'dark';
 const EVENT = 'roleup-theme-change';
@@ -28,6 +29,10 @@ export function ThemeToggle() {
   const toggle = () => {
     const next: Theme = current() === 'dark' ? 'light' : 'dark';
     document.documentElement.dataset.theme = next;
+    // Keep the mobile browser bar in step with the page.
+    document
+      .querySelectorAll('meta[name="theme-color"]')
+      .forEach((m) => m.setAttribute('content', palette[next].bg));
     try {
       localStorage.setItem('roleup-theme', next);
     } catch {
@@ -43,9 +48,20 @@ export function ThemeToggle() {
       onClick={toggle}
       aria-label={label}
       title={label}
-      className="p-2 rounded-sm text-text-muted hover:text-text hover:bg-surface-muted"
+      className="btn btn-ghost btn-sm btn-icon"
     >
-      {theme === 'dark' ? <Sun size={16} aria-hidden /> : <Moon size={16} aria-hidden />}
+      <span className="relative inline-flex h-[17px] w-[17px]">
+        <Sun
+          size={17}
+          aria-hidden
+          className={`absolute inset-0 transition-all duration-300 ${theme === 'dark' ? 'rotate-0 scale-100 opacity-100' : '-rotate-90 scale-50 opacity-0'}`}
+        />
+        <Moon
+          size={17}
+          aria-hidden
+          className={`absolute inset-0 transition-all duration-300 ${theme === 'dark' ? 'rotate-90 scale-50 opacity-0' : 'rotate-0 scale-100 opacity-100'}`}
+        />
+      </span>
     </button>
   );
 }

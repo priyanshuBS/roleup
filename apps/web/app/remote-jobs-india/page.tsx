@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Globe } from 'lucide-react';
 import { ListPage, type SearchParams } from '@/components/ListPage';
 
 export const metadata: Metadata = {
@@ -15,6 +16,8 @@ export default function RemoteIndiaPage({ searchParams }: { searchParams: Search
       searchParams={searchParams}
       fixed={{ remote: 'remote_india' }}
       title="Remote tech jobs open to India"
+      icon={Globe}
+      eyebrow="Remote · India OK"
       intro="Remote roles whose posting names India, an Indian city, or APAC/Asia as eligible. For roles open anywhere, see Remote (Global)."
     />
   );

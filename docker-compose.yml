@@ -1,0 +1,89 @@
+# Full local RoleUp stack: Postgres + migrations/seed + website, with an on-demand crawler.
+#
+#   ADMIN_TOKEN=$(openssl rand -hex 24) docker compose up -d --build   # db, setup, web
+#   docker compose run --rm crawl                                      # fetch jobs (~20s)
+#   docker compose run --rm workers daily                              # YC tags, funding, ATS
+#
+# Open http://localhost:3000 (admin at /admin). The stack always uses its own Postgres by default:
+# the DATABASE_URL in your .env is deliberately ignored so a local run never touches production.
+# To point it at another database, set DOCKER_DATABASE_URL (and DOCKER_DATABASE_URL_UNPOOLED).
+
+x-db-env: &db-env
+  DATABASE_URL: ${DOCKER_DATABASE_URL:-postgres://roleup:roleup@db:5432/roleup}
+  DATABASE_URL_UNPOOLED: ${DOCKER_DATABASE_URL_UNPOOLED:-postgres://roleup:roleup@db:5432/roleup}
+  USD_INR_RATE: ${USD_INR_RATE:-84}
+
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: roleup
+      POSTGRES_PASSWORD: roleup
+      POSTGRES_DB: roleup
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - '127.0.0.1:5432:5432'
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U roleup -d roleup']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # One-shot: apply migrations and seed cities + starter companies (safe to re-run).
+  setup:
+    build:
+      context: .
+      target: workers
+    image: roleup-workers
+    command: ['setup']
+    environment: *db-env
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: 'no'
+
+  web:
+    build:
+      context: .
+      target: web
+      args:
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-http://localhost:3000}
+        NEXT_PUBLIC_CONTACT_EMAIL: ${NEXT_PUBLIC_CONTACT_EMAIL:-}
+    image: roleup-web
+    restart: unless-stopped
+    environment:
+      <<: *db-env
+      ADMIN_TOKEN: ${ADMIN_TOKEN:?Set ADMIN_TOKEN (16+ characters), e.g. openssl rand -hex 24}
+    ports:
+      - '3000:3000'
+    depends_on:
+      setup:
+        condition: service_completed_successfully
+
+  # On demand: `docker compose run --rm crawl` (or schedule it with cron every 6 hours).
+  crawl:
+    image: roleup-workers
+    profiles: ['tools']
+    command: ['crawl']
+    environment:
+      <<: *db-env
+      CRAWLER_CONTACT_EMAIL: ${CRAWLER_CONTACT_EMAIL:-}
+    depends_on:
+      setup:
+        condition: service_completed_successfully
+
+  # Any worker task: `docker compose run --rm workers <task>` (see docker/workers-entrypoint.sh).
+  workers:
+    image: roleup-workers
+    profiles: ['tools']
+    environment:
+      <<: *db-env
+      CRAWLER_CONTACT_EMAIL: ${CRAWLER_CONTACT_EMAIL:-}
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:

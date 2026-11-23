@@ -55,7 +55,7 @@ export function Field({
   const id = `${name}-${Math.abs(hash(String(defaultValue ?? '') + name))}`;
   return (
     <div className={className}>
-      <label htmlFor={id} className="mb-1 block text-xs font-medium text-text-muted">
+      <label htmlFor={id} className="field-label">
         {label}
       </label>
       <input

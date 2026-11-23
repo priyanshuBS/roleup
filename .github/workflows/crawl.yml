@@ -3,7 +3,7 @@ name: Workers
 on:
   schedule:
     - cron: '17 */6 * * *' # crawl-jobs every 6 hours
-    - cron: '41 2 * * *' # daily: sync-yc, track-funding, detect-ats (02:41 UTC = 08:11 IST)
+    - cron: '41 2 * * *' # daily: sync-yc, track-funding (+ verify), discover-companies, detect-ats (02:41 UTC = 08:11 IST)
   workflow_dispatch:
     inputs:
       task:
@@ -53,6 +53,10 @@ jobs:
       - name: Track funding news
         if: github.event.schedule == '41 2 * * *' || inputs.task == 'daily' || inputs.task == 'all'
         run: pnpm track-funding
+
+      - name: Find job boards for new companies
+        if: github.event.schedule == '41 2 * * *' || inputs.task == 'daily' || inputs.task == 'all'
+        run: pnpm discover-companies
 
       - name: Detect ATS for queued companies
         if: github.event.schedule == '41 2 * * *' || inputs.task == 'daily' || inputs.task == 'all'

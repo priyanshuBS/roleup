@@ -17,5 +17,6 @@ export async function POST(req: Request) {
   if (!tokenMatches(token)) return apiError(401, 'Unauthorized');
   revalidateTag('jobs', 'max');
   revalidateTag('funding', 'max');
+  revalidateTag('settings', 'max');
   return json({ ok: true, revalidatedAt: new Date().toISOString() }, { maxAge: 0 });
 }

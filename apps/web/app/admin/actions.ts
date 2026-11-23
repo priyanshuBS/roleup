@@ -3,14 +3,25 @@
 import { updateTag } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
-import { ATS_PROVIDERS, COMPANY_TAGS, FUNDING_ROUNDS, domainFromUrl, slugify } from '@roleup/core';
 import {
+  ATS_PROVIDERS,
+  COMPANY_TAGS,
+  FUNDING_ROUNDS,
+  domainFromUrl,
+  slugify,
+  type SettingKey,
+} from '@roleup/core';
+import {
+  and,
   companies,
   ensureCompany,
   eq,
   fundings,
   getDb,
+  gte,
+  readSettings,
   refreshRecentlyFundedTags,
+  writeSettings,
 } from '@roleup/db';
 import {
   clearAdminSession,
@@ -89,7 +100,36 @@ export async function setFundingStatus(id: number, status: 'approved' | 'rejecte
   await requireAdmin();
   const db = getDb();
   // Headline was only kept for review context; drop it once reviewed (facts + URL only).
-  await db.update(fundings).set({ status, headline: null }).where(eq(fundings.id, id));
+  await db
+    .update(fundings)
+    .set({ status, headline: null, autoApproved: false })
+    .where(eq(fundings.id, id));
+  await refreshRecentlyFundedTags(db);
+  refresh();
+}
+
+/** Ask the next verify run to re-check this entry now (clears the last check time). */
+export async function reverifyFunding(id: number) {
+  await requireAdmin();
+  await getDb().update(fundings).set({ verifiedAt: null }).where(eq(fundings.id, id));
+}
+
+/** Approve every pending entry whose last verification passed the auto-approve threshold. */
+export async function approveVerified() {
+  await requireAdmin();
+  const db = getDb();
+  const { fundingAutoApproveMin } = await readSettings(db);
+  const rows = await db
+    .select({ id: fundings.id, notes: fundings.verifyNotes })
+    .from(fundings)
+    .where(and(eq(fundings.status, 'pending'), gte(fundings.confidence, fundingAutoApproveMin)));
+  // Never bulk-approve entries with a failed hard check (✗ lines).
+  const ids = rows.filter((r) => !r.notes.some((n) => n.startsWith('✗'))).map((r) => r.id);
+  for (const id of ids)
+    await db
+      .update(fundings)
+      .set({ status: 'approved', headline: null })
+      .where(eq(fundings.id, id));
   await refreshRecentlyFundedTags(db);
   refresh();
 }
@@ -202,6 +242,10 @@ export async function saveCompany(_prev: ActionState, form: FormData): Promise<A
         tags: [...tagsFrom(form), ...managed],
         crawlStatus: 'pending',
         crawlError: null,
+        // No board yet but a URL was given: look for the board on the next daily run.
+        ...(d.ats === 'none' && (d.careersUrl || d.website)
+          ? { atsDetectRequestedAt: new Date(), discoveryCheckedAt: null }
+          : {}),
       })
       .where(eq(companies.id, id));
   } else {
@@ -226,6 +270,38 @@ export async function requestAtsDetection(id: number) {
   await requireAdmin();
   await getDb()
     .update(companies)
-    .set({ atsDetectRequestedAt: new Date() })
+    .set({ atsDetectRequestedAt: new Date(), discoveryCheckedAt: null })
     .where(eq(companies.id, id));
+}
+
+/* ---------- settings ---------- */
+
+export async function saveSettings(_prev: ActionState, form: FormData): Promise<ActionState> {
+  await requireAdmin();
+  const apk = String(form.get('apkUrl') ?? '').trim();
+  if (apk) {
+    try {
+      const u = new URL(apk);
+      if (u.protocol !== 'https:') return { error: 'The APK link must start with https://' };
+    } catch {
+      return { error: 'The APK link is not a valid URL.' };
+    }
+  }
+  const min = Number(form.get('autoApproveMin'));
+  if (!Number.isInteger(min) || min < 40 || min > 100)
+    return { error: 'Auto-approve score must be a whole number from 40 to 100.' };
+  const values: Partial<Record<SettingKey, string>> = {
+    'funding.autoApprove': form.get('autoApprove') === 'on' ? 'true' : 'false',
+    'funding.autoApproveMin': String(min),
+    'app.androidApkUrl': apk.slice(0, 1000),
+    'app.androidVersion': String(form.get('apkVersion') ?? '')
+      .trim()
+      .slice(0, 20),
+    'app.androidNotes': String(form.get('apkNotes') ?? '')
+      .trim()
+      .slice(0, 500),
+  };
+  await writeSettings(getDb(), values);
+  updateTag('settings');
+  return { ok: 'Settings saved. The site uses them right away.' };
 }

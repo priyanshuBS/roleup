@@ -6,9 +6,9 @@ import { login } from '../actions';
 export function LoginForm() {
   const [state, action, pending] = useActionState(login, null);
   return (
-    <form action={action} className="mt-4 space-y-3">
+    <form action={action} className="mt-6 space-y-4">
       <div>
-        <label htmlFor="token" className="mb-1 block text-xs font-medium text-text-muted">
+        <label htmlFor="token" className="field-label">
           Admin token
         </label>
         <input
@@ -20,7 +20,7 @@ export function LoginForm() {
           className="field"
         />
       </div>
-      <button type="submit" className="btn btn-primary" disabled={pending}>
+      <button type="submit" className="btn btn-primary w-full" disabled={pending}>
         {pending ? 'Checking…' : 'Sign in'}
       </button>
       {state?.error && (

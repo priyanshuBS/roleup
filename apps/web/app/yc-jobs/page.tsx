@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Flame } from 'lucide-react';
 import { ChipNav } from '@/components/ChipNav';
 import { ListPage, type SearchParams } from '@/components/ListPage';
 import { getMeta } from '@/lib/data';
@@ -12,6 +13,8 @@ export const metadata: Metadata = {
 };
 
 export default async function YcJobsPage({ searchParams }: { searchParams: SearchParams }) {
+  // Read the request first so the page renders per request (never prerendered at build).
+  await searchParams;
   const meta = await getMeta();
   return (
     <ListPage
@@ -19,6 +22,8 @@ export default async function YcJobsPage({ searchParams }: { searchParams: Searc
       searchParams={searchParams}
       fixed={{ tag: 'yc' }}
       title="Jobs at Y Combinator companies"
+      icon={Flame}
+      eyebrow="Y Combinator"
       intro="Companies are matched to YC's public company list by website domain. Pick a batch to narrow down."
       above={
         <ChipNav

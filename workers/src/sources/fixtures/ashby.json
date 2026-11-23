@@ -1,252 +1,252 @@
 {
- "apiVersion": "1",
- "jobs": [
-  {
-   "id": "68a397e7-8a1a-4566-ae41-e8c61dd6ed93",
-   "title": "Product Manager - Strategic Partner Integrations (regular travel to Bay Area)",
-   "department": "Product",
-   "team": "Product",
-   "employmentType": "FullTime",
-   "location": "Remote, Bay Area, CA, US",
-   "shouldDisplayCompensationOnJobPostings": true,
-   "secondaryLocations": [],
-   "publishedAt": "2026-08-21T11:40:44.050+00:00",
-   "isListed": true,
-   "isRemote": null,
-   "workplaceType": null,
-   "address": {
-    "postalAddress": {}
-   },
-   "jobUrl": "https://jobs.ashbyhq.com/supabase/68a397e7-8a1a-4566-ae41-e8c61dd6ed93",
-   "applyUrl": "https://jobs.ashbyhq.com/supabase/68a397e7-8a1a-4566-ae41-e8c61dd6ed93/application",
-   "descriptionHtml": "<h2><strong>About Supabase</strong></h2><p style=\"min-height:1.5em\">Supabase is the Postgres development platform, built by developers for developers. We provide a complete backend solution including Database, Auth, Storage, Edge Functions, Realtime, and Vector Search. All services are deeply integrated and designed for growth.</p><p style=\"min-height:1.5em\"></p><p style=\"min-height:1.5em\">More than 10 million developers build on it, from solo founders shipping over a weekend to teams and builders via Vercel, Lovable and Stripe, and every one of them reaches Supabase through a surface: an API, an auth flow, an SDK, or a Partner's product with Supabase integrated.</p><p style=\"min-height:1.5em\">The current and next wave of software leans on those surfaces harder than any before it.</p><p style=\"min-height:1.5em\">Agents now act on behalf of developers and end users, authentication has to work machine-to-machine as seamlessly as it once worked human-to-human, and independent platforms increasingly need to authenticate, delegate, and coordinate with each other without a person in the loop. For a platform built on Postgres with Auth, Compute, Storage and generated Data APIs at its core, the surfaces where Supabase meets Partners and their systems are some of the most important avenues that we own - this role owns these surfaces.</p><p style=\"min-height:1.5em\">This role owns a focused portfolio of those Partners. Not the platform as a whole, but a small number of strategic Partners",
-   "descriptionPlain": "ABOUT SUPABASE\n\nSupabase is the Postgres development platform, built by developers for developers. We provide a complete backend solution including Database, Auth, Storage, Edge Functions, Realtime, and Vector Search. All services are deeply integrated and designed for growth.\n\n\n\nMore than 10 million developers build on it, from solo founders shipping over a weekend to teams and builders via Vercel, Lovable and Stripe, and every one of them reaches Supabase through a surface: an API, an auth flow, an SDK, or a Partner's product with Supabase integrated.\n\nThe current and next wave of software leans on those surfaces harder than any before it.\n\nAgents now act on behalf of developers and end users, authentication has to work machine-to-machine as seamlessly as it once worked human-to-human, and independent platforms increasingly need to authenticate, delegate, and coordinate with each other without a person in the loop. For a platform built on Postgres with Auth, Compute, Storage and generated Data APIs at its core, the surfaces where Supabase meets Partners and their systems are some of the most important avenues that we own - this role owns these surfaces.\n\nThis role owns a focused portfolio of those Partners. Not the platform as a whole, but a small number of strategic Partners whose integrations you are accountable for making excellent. Success here is a product measure, not a commercial one: the integration is high quality, the developers who use it are well served, and it ",
-   "compensation": {
-    "compensationTierSummary": "$200K – $270K • Offers Equity",
-    "scrapeableCompensationSalarySummary": "$200K - $270K",
-    "compensationTiers": [
-     {
-      "id": "98ae546c-9fe8-4b15-9001-c81009cab0f5",
-      "tierSummary": "Actual salary will be based on job-related skills and experience. $200K – $270K • Offers Equity",
-      "title": null,
-      "additionalInformation": null,
-      "components": [
-       {
-        "id": "71bc8de0-2c1b-4449-868b-b3ac40bd29a8",
-        "summary": "Actual salary will be based on job-related skills and experience. $200K – $270K",
-        "compensationType": "Salary",
-        "interval": "1 YEAR",
-        "currencyCode": "USD",
-        "minValue": 200000,
-        "maxValue": 270000
-       },
-       {
-        "id": "d7d5866f-8ea5-4f13-b96d-f449d01e3661",
-        "summary": "Offers Equity",
-        "compensationType": "EquityPercentage",
-        "interval": "NONE",
-        "currencyCode": null,
-        "minValue": null,
-        "maxValue": null
-       }
-      ]
-     }
-    ],
-    "summaryComponents": [
-     {
-      "compensationType": "Salary",
-      "interval": "1 YEAR",
-      "currencyCode": "USD",
-      "minValue": 200000,
-      "maxValue": 270000
-     },
-     {
-      "compensationType": "EquityPercentage",
-      "interval": "NONE",
-      "currencyCode": null,
-      "minValue": null,
-      "maxValue": null
-     }
-    ]
-   }
-  },
-  {
-   "id": "a0b46de3-5617-41cc-8623-2be9b6fd6b49",
-   "title": "Head of Ecosystem",
-   "department": "Engineering",
-   "team": "Product Engineering",
-   "employmentType": "FullTime",
-   "location": "Remote, AMER",
-   "shouldDisplayCompensationOnJobPostings": false,
-   "secondaryLocations": [],
-   "publishedAt": "2026-11-10T16:33:17.148+00:00",
-   "isListed": true,
-   "isRemote": true,
-   "workplaceType": "Remote",
-   "address": {
-    "postalAddress": {}
-   },
-   "jobUrl": "https://jobs.ashbyhq.com/supabase/a0b46de3-5617-41cc-8623-2be9b6fd6b49",
-   "applyUrl": "https://jobs.ashbyhq.com/supabase/a0b46de3-5617-41cc-8623-2be9b6fd6b49/application",
-   "descriptionHtml": "<p style=\"min-height:1.5em\">Supabase is the Postgres development platform, built by developers for developers. We aim to empower developers by providing a complete backend solution including Database, Auth, Storage, Edge Functions, Realtime, and Vector Search. All services are deeply integrated and designed for growth.</p><p style=\"min-height:1.5em\">We're looking for a Head of Ecosystem to lead the teams that make Supabase the backend for the platforms and tools developers already use. That covers AI app builders and coding agents, integrations with the developer tools teams rely on, and the Supabase Marketplace. You'll build this org from the ground up and shape how Supabase extends beyond its own platform.</p><p style=\"min-height:1.5em\">You'll also drive hiring, onboarding, and career development while maintaining high engineering standards.</p><p style=\"min-height:1.5em\"></p><h2><strong>What you'll own:</strong></h2><ul style=\"min-height:1.5em\"><li><p style=\"min-height:1.5em\">Build and lead a new engineering org across platform partners, integrations, and Marketplace, hiring EMs and engineers as it grows</p></li><li><p style=\"min-height:1.5em\">Own the technical relationship with the platforms building on Supabase, from integration health to escalations</p></li><li><p style=\"min-height:1.5em\">Set and maintain clear roadmaps that balance partner needs with platform priorities</p></li><li><p style=\"min-height:1.5em\">Partner with Product, Partnerships, and Sales to define and ",
-   "descriptionPlain": "Supabase is the Postgres development platform, built by developers for developers. We aim to empower developers by providing a complete backend solution including Database, Auth, Storage, Edge Functions, Realtime, and Vector Search. All services are deeply integrated and designed for growth.\n\nWe're looking for a Head of Ecosystem to lead the teams that make Supabase the backend for the platforms and tools developers already use. That covers AI app builders and coding agents, integrations with the developer tools teams rely on, and the Supabase Marketplace. You'll build this org from the ground up and shape how Supabase extends beyond its own platform.\n\nYou'll also drive hiring, onboarding, and career development while maintaining high engineering standards.\n\n\n\n\nWHAT YOU'LL OWN:\n\n - Build and lead a new engineering org across platform partners, integrations, and Marketplace, hiring EMs and engineers as it grows\n\n - Own the technical relationship with the platforms building on Supabase, from integration health to escalations\n\n - Set and maintain clear roadmaps that balance partner needs with platform priorities\n\n - Partner with Product, Partnerships, and Sales to define and execute our ecosystem strategy\n\n - Ship a unified, self-serve surface for integrations and Marketplace\n\n - Maintain high engineering standards: roadmap hygiene, issue tracking, on-call, incident response, and responsiveness to partners\n\n\nWHAT YOU BRING:\n\n - Proven experience leading multiple engineering team",
-   "compensation": {
-    "compensationTierSummary": null,
-    "scrapeableCompensationSalarySummary": null,
-    "compensationTiers": [],
-    "summaryComponents": []
-   }
-  },
-  {
-   "id": "a6fc3980-3f96-4df9-a1b4-d7ed0e1ff7c4",
-   "title": "Senior Accountant ",
-   "department": "Operations",
-   "team": "Finance",
-   "employmentType": "FullTime",
-   "location": "Remote, AMER",
-   "shouldDisplayCompensationOnJobPostings": false,
-   "secondaryLocations": [],
-   "publishedAt": "2026-11-12T02:00:51.509+00:00",
-   "isListed": true,
-   "isRemote": true,
-   "workplaceType": "Remote",
-   "address": {
-    "postalAddress": {}
-   },
-   "jobUrl": "https://jobs.ashbyhq.com/supabase/a6fc3980-3f96-4df9-a1b4-d7ed0e1ff7c4",
-   "applyUrl": "https://jobs.ashbyhq.com/supabase/a6fc3980-3f96-4df9-a1b4-d7ed0e1ff7c4/application",
-   "descriptionHtml": "<h2><strong>About Supabase</strong></h2><p style=\"min-height:1.5em\">Supabase is the Postgres development platform, built by developers for developers. We provide a complete backend solution including Database, Auth, Storage, Edge Functions, Realtime, and Vector Search. All services are deeply integrated and designed for growth.<br /></p><p style=\"min-height:1.5em\"></p><h2><strong>About the Role</strong></h2><p style=\"min-height:1.5em\">We're looking for a detail-oriented, driven <strong>Senior Accountant</strong> to join our <strong>Accounting team</strong> at an exciting time of growth for Supabase. As we continue to scale, we're expanding the team to add experience, spread responsibilities, and strengthen the processes that keep our financials accurate and timely. This is a hands-on role with real ownership and a lot of autonomy.</p><p style=\"min-height:1.5em\"></p><p style=\"min-height:1.5em\">In this role, you'll support the month-end close, perform analytics on financial results, assist with external audit and tax requests, and take on ad-hoc projects. You'll collaborate across Finance and the wider company, including FP&amp;A, People/Payroll, and Legal, and work with our external audit, tax, and technical accounting partners, while contributing to the continuous improvement of our processes and controls. This role is open to candidates based in North America.</p><p style=\"min-height:1.5em\"></p><p style=\"min-height:1.5em\">This role is ideal for someone who thrives in async, ",
-   "descriptionPlain": "ABOUT SUPABASE\n\nSupabase is the Postgres development platform, built by developers for developers. We provide a complete backend solution including Database, Auth, Storage, Edge Functions, Realtime, and Vector Search. All services are deeply integrated and designed for growth.\n\n\n\n\n\nABOUT THE ROLE\n\nWe're looking for a detail-oriented, driven Senior Accountant to join our Accounting team at an exciting time of growth for Supabase. As we continue to scale, we're expanding the team to add experience, spread responsibilities, and strengthen the processes that keep our financials accurate and timely. This is a hands-on role with real ownership and a lot of autonomy.\n\n\n\nIn this role, you'll support the month-end close, perform analytics on financial results, assist with external audit and tax requests, and take on ad-hoc projects. You'll collaborate across Finance and the wider company, including FP&A, People/Payroll, and Legal, and work with our external audit, tax, and technical accounting partners, while contributing to the continuous improvement of our processes and controls. This role is open to candidates based in North America.\n\n\n\nThis role is ideal for someone who thrives in async, fast-paced environments and is excited about building developer tools that scale to millions.\n\n\n\nWHAT YOU'LL BE RESPONSIBLE FOR\n\n - Own key areas of the monthly, quarterly, and annual close within your assigned areas, preparing workpapers, journal entries, account reconciliations, flux analysis, a",
-   "compensation": {
-    "compensationTierSummary": null,
-    "scrapeableCompensationSalarySummary": null,
-    "compensationTiers": [],
-    "summaryComponents": []
-   }
-  },
-  {
-   "id": "c0406fe0-c8c0-44aa-aa3e-b879f2bf1049",
-   "title": "Engagement Manager, Chanakya",
-   "department": "Business Development",
-   "team": "Business Development",
-   "employmentType": "FullTime",
-   "location": "Delhi",
-   "shouldDisplayCompensationOnJobPostings": false,
-   "secondaryLocations": [],
-   "publishedAt": "2026-04-17T11:46:39.214+00:00",
-   "isListed": true,
-   "isRemote": false,
-   "workplaceType": "OnSite",
-   "address": {
-    "postalAddress": {
-     "addressRegion": "Delhi",
-     "addressCountry": "India",
-     "addressLocality": "Delhi"
+  "apiVersion": "1",
+  "jobs": [
+    {
+      "id": "68a397e7-8a1a-4566-ae41-e8c61dd6ed93",
+      "title": "Product Manager - Strategic Partner Integrations (regular travel to Bay Area)",
+      "department": "Product",
+      "team": "Product",
+      "employmentType": "FullTime",
+      "location": "Remote, Bay Area, CA, US",
+      "shouldDisplayCompensationOnJobPostings": true,
+      "secondaryLocations": [],
+      "publishedAt": "2026-08-21T11:40:44.050+00:00",
+      "isListed": true,
+      "isRemote": null,
+      "workplaceType": null,
+      "address": {
+        "postalAddress": {}
+      },
+      "jobUrl": "https://jobs.ashbyhq.com/supabase/68a397e7-8a1a-4566-ae41-e8c61dd6ed93",
+      "applyUrl": "https://jobs.ashbyhq.com/supabase/68a397e7-8a1a-4566-ae41-e8c61dd6ed93/application",
+      "descriptionHtml": "<h2><strong>About Supabase</strong></h2><p style=\"min-height:1.5em\">Supabase is the Postgres development platform, built by developers for developers. We provide a complete backend solution including Database, Auth, Storage, Edge Functions, Realtime, and Vector Search. All services are deeply integrated and designed for growth.</p><p style=\"min-height:1.5em\"></p><p style=\"min-height:1.5em\">More than 10 million developers build on it, from solo founders shipping over a weekend to teams and builders via Vercel, Lovable and Stripe, and every one of them reaches Supabase through a surface: an API, an auth flow, an SDK, or a Partner's product with Supabase integrated.</p><p style=\"min-height:1.5em\">The current and next wave of software leans on those surfaces harder than any before it.</p><p style=\"min-height:1.5em\">Agents now act on behalf of developers and end users, authentication has to work machine-to-machine as seamlessly as it once worked human-to-human, and independent platforms increasingly need to authenticate, delegate, and coordinate with each other without a person in the loop. For a platform built on Postgres with Auth, Compute, Storage and generated Data APIs at its core, the surfaces where Supabase meets Partners and their systems are some of the most important avenues that we own - this role owns these surfaces.</p><p style=\"min-height:1.5em\">This role owns a focused portfolio of those Partners. Not the platform as a whole, but a small number of strategic Partners",
+      "descriptionPlain": "ABOUT SUPABASE\n\nSupabase is the Postgres development platform, built by developers for developers. We provide a complete backend solution including Database, Auth, Storage, Edge Functions, Realtime, and Vector Search. All services are deeply integrated and designed for growth.\n\n\n\nMore than 10 million developers build on it, from solo founders shipping over a weekend to teams and builders via Vercel, Lovable and Stripe, and every one of them reaches Supabase through a surface: an API, an auth flow, an SDK, or a Partner's product with Supabase integrated.\n\nThe current and next wave of software leans on those surfaces harder than any before it.\n\nAgents now act on behalf of developers and end users, authentication has to work machine-to-machine as seamlessly as it once worked human-to-human, and independent platforms increasingly need to authenticate, delegate, and coordinate with each other without a person in the loop. For a platform built on Postgres with Auth, Compute, Storage and generated Data APIs at its core, the surfaces where Supabase meets Partners and their systems are some of the most important avenues that we own - this role owns these surfaces.\n\nThis role owns a focused portfolio of those Partners. Not the platform as a whole, but a small number of strategic Partners whose integrations you are accountable for making excellent. Success here is a product measure, not a commercial one: the integration is high quality, the developers who use it are well served, and it ",
+      "compensation": {
+        "compensationTierSummary": "$200K – $270K • Offers Equity",
+        "scrapeableCompensationSalarySummary": "$200K - $270K",
+        "compensationTiers": [
+          {
+            "id": "98ae546c-9fe8-4b15-9001-c81009cab0f5",
+            "tierSummary": "Actual salary will be based on job-related skills and experience. $200K – $270K • Offers Equity",
+            "title": null,
+            "additionalInformation": null,
+            "components": [
+              {
+                "id": "71bc8de0-2c1b-4449-868b-b3ac40bd29a8",
+                "summary": "Actual salary will be based on job-related skills and experience. $200K – $270K",
+                "compensationType": "Salary",
+                "interval": "1 YEAR",
+                "currencyCode": "USD",
+                "minValue": 200000,
+                "maxValue": 270000
+              },
+              {
+                "id": "d7d5866f-8ea5-4f13-b96d-f449d01e3661",
+                "summary": "Offers Equity",
+                "compensationType": "EquityPercentage",
+                "interval": "NONE",
+                "currencyCode": null,
+                "minValue": null,
+                "maxValue": null
+              }
+            ]
+          }
+        ],
+        "summaryComponents": [
+          {
+            "compensationType": "Salary",
+            "interval": "1 YEAR",
+            "currencyCode": "USD",
+            "minValue": 200000,
+            "maxValue": 270000
+          },
+          {
+            "compensationType": "EquityPercentage",
+            "interval": "NONE",
+            "currencyCode": null,
+            "minValue": null,
+            "maxValue": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "a0b46de3-5617-41cc-8623-2be9b6fd6b49",
+      "title": "Head of Ecosystem",
+      "department": "Engineering",
+      "team": "Product Engineering",
+      "employmentType": "FullTime",
+      "location": "Remote, AMER",
+      "shouldDisplayCompensationOnJobPostings": false,
+      "secondaryLocations": [],
+      "publishedAt": "2026-11-10T16:33:17.148+00:00",
+      "isListed": true,
+      "isRemote": true,
+      "workplaceType": "Remote",
+      "address": {
+        "postalAddress": {}
+      },
+      "jobUrl": "https://jobs.ashbyhq.com/supabase/a0b46de3-5617-41cc-8623-2be9b6fd6b49",
+      "applyUrl": "https://jobs.ashbyhq.com/supabase/a0b46de3-5617-41cc-8623-2be9b6fd6b49/application",
+      "descriptionHtml": "<p style=\"min-height:1.5em\">Supabase is the Postgres development platform, built by developers for developers. We aim to empower developers by providing a complete backend solution including Database, Auth, Storage, Edge Functions, Realtime, and Vector Search. All services are deeply integrated and designed for growth.</p><p style=\"min-height:1.5em\">We're looking for a Head of Ecosystem to lead the teams that make Supabase the backend for the platforms and tools developers already use. That covers AI app builders and coding agents, integrations with the developer tools teams rely on, and the Supabase Marketplace. You'll build this org from the ground up and shape how Supabase extends beyond its own platform.</p><p style=\"min-height:1.5em\">You'll also drive hiring, onboarding, and career development while maintaining high engineering standards.</p><p style=\"min-height:1.5em\"></p><h2><strong>What you'll own:</strong></h2><ul style=\"min-height:1.5em\"><li><p style=\"min-height:1.5em\">Build and lead a new engineering org across platform partners, integrations, and Marketplace, hiring EMs and engineers as it grows</p></li><li><p style=\"min-height:1.5em\">Own the technical relationship with the platforms building on Supabase, from integration health to escalations</p></li><li><p style=\"min-height:1.5em\">Set and maintain clear roadmaps that balance partner needs with platform priorities</p></li><li><p style=\"min-height:1.5em\">Partner with Product, Partnerships, and Sales to define and ",
+      "descriptionPlain": "Supabase is the Postgres development platform, built by developers for developers. We aim to empower developers by providing a complete backend solution including Database, Auth, Storage, Edge Functions, Realtime, and Vector Search. All services are deeply integrated and designed for growth.\n\nWe're looking for a Head of Ecosystem to lead the teams that make Supabase the backend for the platforms and tools developers already use. That covers AI app builders and coding agents, integrations with the developer tools teams rely on, and the Supabase Marketplace. You'll build this org from the ground up and shape how Supabase extends beyond its own platform.\n\nYou'll also drive hiring, onboarding, and career development while maintaining high engineering standards.\n\n\n\n\nWHAT YOU'LL OWN:\n\n - Build and lead a new engineering org across platform partners, integrations, and Marketplace, hiring EMs and engineers as it grows\n\n - Own the technical relationship with the platforms building on Supabase, from integration health to escalations\n\n - Set and maintain clear roadmaps that balance partner needs with platform priorities\n\n - Partner with Product, Partnerships, and Sales to define and execute our ecosystem strategy\n\n - Ship a unified, self-serve surface for integrations and Marketplace\n\n - Maintain high engineering standards: roadmap hygiene, issue tracking, on-call, incident response, and responsiveness to partners\n\n\nWHAT YOU BRING:\n\n - Proven experience leading multiple engineering team",
+      "compensation": {
+        "compensationTierSummary": null,
+        "scrapeableCompensationSalarySummary": null,
+        "compensationTiers": [],
+        "summaryComponents": []
+      }
+    },
+    {
+      "id": "a6fc3980-3f96-4df9-a1b4-d7ed0e1ff7c4",
+      "title": "Senior Accountant ",
+      "department": "Operations",
+      "team": "Finance",
+      "employmentType": "FullTime",
+      "location": "Remote, AMER",
+      "shouldDisplayCompensationOnJobPostings": false,
+      "secondaryLocations": [],
+      "publishedAt": "2026-11-12T02:00:51.509+00:00",
+      "isListed": true,
+      "isRemote": true,
+      "workplaceType": "Remote",
+      "address": {
+        "postalAddress": {}
+      },
+      "jobUrl": "https://jobs.ashbyhq.com/supabase/a6fc3980-3f96-4df9-a1b4-d7ed0e1ff7c4",
+      "applyUrl": "https://jobs.ashbyhq.com/supabase/a6fc3980-3f96-4df9-a1b4-d7ed0e1ff7c4/application",
+      "descriptionHtml": "<h2><strong>About Supabase</strong></h2><p style=\"min-height:1.5em\">Supabase is the Postgres development platform, built by developers for developers. We provide a complete backend solution including Database, Auth, Storage, Edge Functions, Realtime, and Vector Search. All services are deeply integrated and designed for growth.<br /></p><p style=\"min-height:1.5em\"></p><h2><strong>About the Role</strong></h2><p style=\"min-height:1.5em\">We're looking for a detail-oriented, driven <strong>Senior Accountant</strong> to join our <strong>Accounting team</strong> at an exciting time of growth for Supabase. As we continue to scale, we're expanding the team to add experience, spread responsibilities, and strengthen the processes that keep our financials accurate and timely. This is a hands-on role with real ownership and a lot of autonomy.</p><p style=\"min-height:1.5em\"></p><p style=\"min-height:1.5em\">In this role, you'll support the month-end close, perform analytics on financial results, assist with external audit and tax requests, and take on ad-hoc projects. You'll collaborate across Finance and the wider company, including FP&amp;A, People/Payroll, and Legal, and work with our external audit, tax, and technical accounting partners, while contributing to the continuous improvement of our processes and controls. This role is open to candidates based in North America.</p><p style=\"min-height:1.5em\"></p><p style=\"min-height:1.5em\">This role is ideal for someone who thrives in async, ",
+      "descriptionPlain": "ABOUT SUPABASE\n\nSupabase is the Postgres development platform, built by developers for developers. We provide a complete backend solution including Database, Auth, Storage, Edge Functions, Realtime, and Vector Search. All services are deeply integrated and designed for growth.\n\n\n\n\n\nABOUT THE ROLE\n\nWe're looking for a detail-oriented, driven Senior Accountant to join our Accounting team at an exciting time of growth for Supabase. As we continue to scale, we're expanding the team to add experience, spread responsibilities, and strengthen the processes that keep our financials accurate and timely. This is a hands-on role with real ownership and a lot of autonomy.\n\n\n\nIn this role, you'll support the month-end close, perform analytics on financial results, assist with external audit and tax requests, and take on ad-hoc projects. You'll collaborate across Finance and the wider company, including FP&A, People/Payroll, and Legal, and work with our external audit, tax, and technical accounting partners, while contributing to the continuous improvement of our processes and controls. This role is open to candidates based in North America.\n\n\n\nThis role is ideal for someone who thrives in async, fast-paced environments and is excited about building developer tools that scale to millions.\n\n\n\nWHAT YOU'LL BE RESPONSIBLE FOR\n\n - Own key areas of the monthly, quarterly, and annual close within your assigned areas, preparing workpapers, journal entries, account reconciliations, flux analysis, a",
+      "compensation": {
+        "compensationTierSummary": null,
+        "scrapeableCompensationSalarySummary": null,
+        "compensationTiers": [],
+        "summaryComponents": []
+      }
+    },
+    {
+      "id": "c0406fe0-c8c0-44aa-aa3e-b879f2bf1049",
+      "title": "Engagement Manager, Chanakya",
+      "department": "Business Development",
+      "team": "Business Development",
+      "employmentType": "FullTime",
+      "location": "Delhi",
+      "shouldDisplayCompensationOnJobPostings": false,
+      "secondaryLocations": [],
+      "publishedAt": "2026-04-17T11:46:39.214+00:00",
+      "isListed": true,
+      "isRemote": false,
+      "workplaceType": "OnSite",
+      "address": {
+        "postalAddress": {
+          "addressRegion": "Delhi",
+          "addressCountry": "India",
+          "addressLocality": "Delhi"
+        }
+      },
+      "jobUrl": "https://jobs.ashbyhq.com/sarvam/c0406fe0-c8c0-44aa-aa3e-b879f2bf1049",
+      "applyUrl": "https://jobs.ashbyhq.com/sarvam/c0406fe0-c8c0-44aa-aa3e-b879f2bf1049/application",
+      "descriptionHtml": "<p style=\"min-height:1.5em\"><strong>About Sarvam</strong></p><p style=\"min-height:1.5em\">Sarvam is building the bedrock of Sovereign AI for India. The company is developing India's full-stack sovereign AI platform, building across research, models, infrastructure and applications with a singular focus on making AI genuinely work for India. Sarvam works with leading enterprises and public institutions and is backed by Lightspeed, Peak XV, and Khosla Ventures. Sarvam partners with India's leading brands, including Tata Capital, SBI Life, CRED, IDFC, and LIC.</p><p style=\"min-height:1.5em\"><strong>About the Role</strong></p><p style=\"min-height:1.5em\">Engagement Manager is a senior client-facing role in the vertical. You own pipeline development, account strategy, and long-term engagement management. This is a builder role for someone who understands the procurement landscape, can engage at the CXO and technical leadership level, and can convert complex AI capability into funded, deployable programmes.</p><p style=\"min-height:1.5em\"><strong>What You'll Do</strong></p><p style=\"min-height:1.5em\">• Own the day-to-day management of active client engagements, from scoping and alignment through to operational handover and adoption</p><p style=\"min-height:1.5em\">• Serve as the primary point of contact for clients across the engagement lifecycle; manage expectations proactively and honestly</p><p style=\"min-height:1.5em\">• Translate client operational problems into precise briefs that ",
+      "descriptionPlain": "About Sarvam\n\nSarvam is building the bedrock of Sovereign AI for India. The company is developing India's full-stack sovereign AI platform, building across research, models, infrastructure and applications with a singular focus on making AI genuinely work for India. Sarvam works with leading enterprises and public institutions and is backed by Lightspeed, Peak XV, and Khosla Ventures. Sarvam partners with India's leading brands, including Tata Capital, SBI Life, CRED, IDFC, and LIC.\n\nAbout the Role\n\nEngagement Manager is a senior client-facing role in the vertical. You own pipeline development, account strategy, and long-term engagement management. This is a builder role for someone who understands the procurement landscape, can engage at the CXO and technical leadership level, and can convert complex AI capability into funded, deployable programmes.\n\nWhat You'll Do\n\n• Own the day-to-day management of active client engagements, from scoping and alignment through to operational handover and adoption\n\n• Serve as the primary point of contact for clients across the engagement lifecycle; manage expectations proactively and honestly\n\n• Translate client operational problems into precise briefs that deployment and engineering teams can act on\n\n• Track delivery against commitments; surface risks early and drive resolution without waiting for escalation\n\n• Work with Strategic Deployment Engineers to ensure what is being built reflects what the client actually needs\n\n• Support pipeline ",
+      "compensation": {
+        "compensationTierSummary": null,
+        "scrapeableCompensationSalarySummary": null,
+        "compensationTiers": [],
+        "summaryComponents": []
+      }
+    },
+    {
+      "id": "7c42207a-bb56-413c-839f-9ad692df840e",
+      "title": "Data Scientist - Evaluations, Chanakya",
+      "department": "Engineering",
+      "team": "Engineering",
+      "employmentType": "FullTime",
+      "location": "Bengaluru",
+      "shouldDisplayCompensationOnJobPostings": false,
+      "secondaryLocations": [],
+      "publishedAt": "2026-04-17T11:56:48.684+00:00",
+      "isListed": true,
+      "isRemote": false,
+      "workplaceType": "OnSite",
+      "address": {
+        "postalAddress": {
+          "addressRegion": "Karnataka",
+          "addressCountry": "India",
+          "addressLocality": "Bengaluru"
+        }
+      },
+      "jobUrl": "https://jobs.ashbyhq.com/sarvam/7c42207a-bb56-413c-839f-9ad692df840e",
+      "applyUrl": "https://jobs.ashbyhq.com/sarvam/7c42207a-bb56-413c-839f-9ad692df840e/application",
+      "descriptionHtml": "<p style=\"min-height:1.5em\"><strong>About Sarvam</strong></p><p style=\"min-height:1.5em\">Sarvam is building the bedrock of Sovereign AI for India. The company is developing India's full-stack sovereign AI platform, building across research, models, infrastructure and applications with a singular focus on making AI genuinely work for India. Sarvam works with leading enterprises and public institutions and is backed by Lightspeed, Peak XV, and Khosla Ventures. Sarvam partners with India's leading brands, including Tata Capital, SBI Life, CRED, IDFC, and LIC.</p><p style=\"min-height:1.5em\"> </p><p style=\"min-height:1.5em\"><strong>About the Role</strong></p><p style=\"min-height:1.5em\">This is an intellectually demanding role. The Data Scientist anchors the evaluations function for this vertical — designing, building, and maintaining evaluation frameworks that measure model and system quality in operational context. You are not running standard benchmarks. You are building domain-specific eval harnesses for high-stakes use cases where a wrong answer carries real consequences.</p><p style=\"min-height:1.5em\">You will work closely with the MLOps Engineer, the PM, and the deployment team. The evaluations you design are the mechanism by which the team determines whether what we've built is good enough to deploy — and whether it stays good after deployment.</p><p style=\"min-height:1.5em\"> </p><p style=\"min-height:1.5em\"><strong>What You'll Do</strong></p><p style=\"min-height:1.5em\">•  D",
+      "descriptionPlain": "About Sarvam\n\nSarvam is building the bedrock of Sovereign AI for India. The company is developing India's full-stack sovereign AI platform, building across research, models, infrastructure and applications with a singular focus on making AI genuinely work for India. Sarvam works with leading enterprises and public institutions and is backed by Lightspeed, Peak XV, and Khosla Ventures. Sarvam partners with India's leading brands, including Tata Capital, SBI Life, CRED, IDFC, and LIC.\n\n \n\nAbout the Role\n\nThis is an intellectually demanding role. The Data Scientist anchors the evaluations function for this vertical — designing, building, and maintaining evaluation frameworks that measure model and system quality in operational context. You are not running standard benchmarks. You are building domain-specific eval harnesses for high-stakes use cases where a wrong answer carries real consequences.\n\nYou will work closely with the MLOps Engineer, the PM, and the deployment team. The evaluations you design are the mechanism by which the team determines whether what we've built is good enough to deploy — and whether it stays good after deployment.\n\n \n\nWhat You'll Do\n\n•  Design and build evaluation frameworks for Sarvam's AI outputs across domain-specific requirements: document comprehension, command summarisation, geospatial reasoning, enterprise workflow automation, and others as they emerge\n\n•  Define quality metrics in collaboration with domain experts and clients; translate operat",
+      "compensation": {
+        "compensationTierSummary": null,
+        "scrapeableCompensationSalarySummary": null,
+        "compensationTiers": [],
+        "summaryComponents": []
+      }
+    },
+    {
+      "id": "dc047f4f-97be-4bb3-a9f1-cebbfc4de3e6",
+      "title": "Embedded Data Scientist, Chanakya",
+      "department": "Engineering",
+      "team": "Engineering",
+      "employmentType": "FullTime",
+      "location": "Delhi",
+      "shouldDisplayCompensationOnJobPostings": false,
+      "secondaryLocations": [],
+      "publishedAt": "2026-04-17T11:59:15.600+00:00",
+      "isListed": true,
+      "isRemote": false,
+      "workplaceType": "OnSite",
+      "address": {
+        "postalAddress": {
+          "addressRegion": "Delhi",
+          "addressCountry": "India",
+          "addressLocality": "Delhi"
+        }
+      },
+      "jobUrl": "https://jobs.ashbyhq.com/sarvam/dc047f4f-97be-4bb3-a9f1-cebbfc4de3e6",
+      "applyUrl": "https://jobs.ashbyhq.com/sarvam/dc047f4f-97be-4bb3-a9f1-cebbfc4de3e6/application",
+      "descriptionHtml": "<p style=\"min-height:1.5em\"><strong>About Sarvam</strong></p><p style=\"min-height:1.5em\">Sarvam is building the bedrock of Sovereign AI for India. The company is developing India's full-stack sovereign AI platform, building across research, models, infrastructure and applications with a singular focus on making AI genuinely work for India. Sarvam works with leading enterprises and public institutions and is backed by Lightspeed, Peak XV, and Khosla Ventures. Sarvam partners with India's leading brands, including Tata Capital, SBI Life, CRED, IDFC, and LIC.</p><p style=\"min-height:1.5em\"><strong>About the Role</strong></p><p style=\"min-height:1.5em\">Embedded Data Scientists transform complex client data into structures that AI systems can reliably reason over. You are deployed alongside Strategic Deployment Engineers at client sites, working directly with client data environments to understand, structure, and operationalise large-scale datasets.</p><p style=\"min-height:1.5em\">This means working with heterogeneous, multimodal data — including documents, images, audio, geospatial data, and structured records — and designing the semantic structures that allow AI systems to interpret and reason over that data.</p><p style=\"min-height:1.5em\">You will define how data is represented inside the AI system: how documents are segmented, how metadata is defined, how entities and relationships are represented, and how different data modalities connect. You will design ontologies, tagging s",
+      "descriptionPlain": "About Sarvam\n\nSarvam is building the bedrock of Sovereign AI for India. The company is developing India's full-stack sovereign AI platform, building across research, models, infrastructure and applications with a singular focus on making AI genuinely work for India. Sarvam works with leading enterprises and public institutions and is backed by Lightspeed, Peak XV, and Khosla Ventures. Sarvam partners with India's leading brands, including Tata Capital, SBI Life, CRED, IDFC, and LIC.\n\nAbout the Role\n\nEmbedded Data Scientists transform complex client data into structures that AI systems can reliably reason over. You are deployed alongside Strategic Deployment Engineers at client sites, working directly with client data environments to understand, structure, and operationalise large-scale datasets.\n\nThis means working with heterogeneous, multimodal data — including documents, images, audio, geospatial data, and structured records — and designing the semantic structures that allow AI systems to interpret and reason over that data.\n\nYou will define how data is represented inside the AI system: how documents are segmented, how metadata is defined, how entities and relationships are represented, and how different data modalities connect. You will design ontologies, tagging systems, and knowledge graph structures that allow the reasoning engine to operate effectively.\n\nYou will often work with classified or operationally sensitive datasets in environments where standard tooling may n",
+      "compensation": {
+        "compensationTierSummary": null,
+        "scrapeableCompensationSalarySummary": null,
+        "compensationTiers": [],
+        "summaryComponents": []
+      }
+    },
+    {
+      "id": "b2201b5e-1e96-497a-962c-bca1768f75fd",
+      "title": "Embedded Infrastructure Engineer, Chanakya",
+      "department": "Engineering",
+      "team": "Engineering",
+      "employmentType": "FullTime",
+      "location": "Delhi",
+      "shouldDisplayCompensationOnJobPostings": false,
+      "secondaryLocations": [],
+      "publishedAt": "2026-04-17T12:01:22.644+00:00",
+      "isListed": true,
+      "isRemote": false,
+      "workplaceType": "OnSite",
+      "address": {
+        "postalAddress": {
+          "addressRegion": "Delhi",
+          "addressCountry": "India",
+          "addressLocality": "Delhi"
+        }
+      },
+      "jobUrl": "https://jobs.ashbyhq.com/sarvam/b2201b5e-1e96-497a-962c-bca1768f75fd",
+      "applyUrl": "https://jobs.ashbyhq.com/sarvam/b2201b5e-1e96-497a-962c-bca1768f75fd/application",
+      "descriptionHtml": "<p style=\"min-height:1.5em\"><strong>About Sarvam</strong></p><p style=\"min-height:1.5em\">Sarvam is building the bedrock of Sovereign AI for India. The company is developing India's full-stack sovereign AI platform, building across research, models, infrastructure and applications with a singular focus on making AI genuinely work for India. Sarvam works with leading enterprises and public institutions and is backed by Lightspeed, Peak XV, and Khosla Ventures. Sarvam partners with India's leading brands, including Tata Capital, SBI Life, CRED, IDFC, and LIC.</p><p style=\"min-height:1.5em\"> </p><p style=\"min-height:1.5em\"><strong>About the Role</strong></p><p style=\"min-height:1.5em\">Embedded Infrastructure Engineers design, build, and maintain the data infrastructure that underpins AI system deployments at client sites. You work alongside Embedded Data Scientists and Strategic Deployment Engineers to ensure that terabyte-scale datasets can be ingested, stored, queried, and served to AI reasoning engines reliably and performantly.</p><p style=\"min-height:1.5em\">This means building and operating data platforms that handle terabyte-scale persistent data stores and sustained large daily ingestion volumes across structured records, documents, imagery, audio, and geospatial data. You will design and maintain the databases, object stores, ingestion pipelines, and processing layers that make this possible.</p><p style=\"min-height:1.5em\">You will make critical decisions about storage ar",
+      "descriptionPlain": "About Sarvam\n\nSarvam is building the bedrock of Sovereign AI for India. The company is developing India's full-stack sovereign AI platform, building across research, models, infrastructure and applications with a singular focus on making AI genuinely work for India. Sarvam works with leading enterprises and public institutions and is backed by Lightspeed, Peak XV, and Khosla Ventures. Sarvam partners with India's leading brands, including Tata Capital, SBI Life, CRED, IDFC, and LIC.\n\n \n\nAbout the Role\n\nEmbedded Infrastructure Engineers design, build, and maintain the data infrastructure that underpins AI system deployments at client sites. You work alongside Embedded Data Scientists and Strategic Deployment Engineers to ensure that terabyte-scale datasets can be ingested, stored, queried, and served to AI reasoning engines reliably and performantly.\n\nThis means building and operating data platforms that handle terabyte-scale persistent data stores and sustained large daily ingestion volumes across structured records, documents, imagery, audio, and geospatial data. You will design and maintain the databases, object stores, ingestion pipelines, and processing layers that make this possible.\n\nYou will make critical decisions about storage architecture, indexing strategies, pipeline orchestration, and system performance — often in constrained, air-gapped, or operationally sensitive environments where you cannot rely on managed cloud services or standard enterprise tooling. You wi",
+      "compensation": {
+        "compensationTierSummary": null,
+        "scrapeableCompensationSalarySummary": null,
+        "compensationTiers": [],
+        "summaryComponents": []
+      }
     }
-   },
-   "jobUrl": "https://jobs.ashbyhq.com/sarvam/c0406fe0-c8c0-44aa-aa3e-b879f2bf1049",
-   "applyUrl": "https://jobs.ashbyhq.com/sarvam/c0406fe0-c8c0-44aa-aa3e-b879f2bf1049/application",
-   "descriptionHtml": "<p style=\"min-height:1.5em\"><strong>About Sarvam</strong></p><p style=\"min-height:1.5em\">Sarvam is building the bedrock of Sovereign AI for India. The company is developing India's full-stack sovereign AI platform, building across research, models, infrastructure and applications with a singular focus on making AI genuinely work for India. Sarvam works with leading enterprises and public institutions and is backed by Lightspeed, Peak XV, and Khosla Ventures. Sarvam partners with India's leading brands, including Tata Capital, SBI Life, CRED, IDFC, and LIC.</p><p style=\"min-height:1.5em\"><strong>About the Role</strong></p><p style=\"min-height:1.5em\">Engagement Manager is a senior client-facing role in the vertical. You own pipeline development, account strategy, and long-term engagement management. This is a builder role for someone who understands the procurement landscape, can engage at the CXO and technical leadership level, and can convert complex AI capability into funded, deployable programmes.</p><p style=\"min-height:1.5em\"><strong>What You'll Do</strong></p><p style=\"min-height:1.5em\">• Own the day-to-day management of active client engagements, from scoping and alignment through to operational handover and adoption</p><p style=\"min-height:1.5em\">• Serve as the primary point of contact for clients across the engagement lifecycle; manage expectations proactively and honestly</p><p style=\"min-height:1.5em\">• Translate client operational problems into precise briefs that ",
-   "descriptionPlain": "About Sarvam\n\nSarvam is building the bedrock of Sovereign AI for India. The company is developing India's full-stack sovereign AI platform, building across research, models, infrastructure and applications with a singular focus on making AI genuinely work for India. Sarvam works with leading enterprises and public institutions and is backed by Lightspeed, Peak XV, and Khosla Ventures. Sarvam partners with India's leading brands, including Tata Capital, SBI Life, CRED, IDFC, and LIC.\n\nAbout the Role\n\nEngagement Manager is a senior client-facing role in the vertical. You own pipeline development, account strategy, and long-term engagement management. This is a builder role for someone who understands the procurement landscape, can engage at the CXO and technical leadership level, and can convert complex AI capability into funded, deployable programmes.\n\nWhat You'll Do\n\n• Own the day-to-day management of active client engagements, from scoping and alignment through to operational handover and adoption\n\n• Serve as the primary point of contact for clients across the engagement lifecycle; manage expectations proactively and honestly\n\n• Translate client operational problems into precise briefs that deployment and engineering teams can act on\n\n• Track delivery against commitments; surface risks early and drive resolution without waiting for escalation\n\n• Work with Strategic Deployment Engineers to ensure what is being built reflects what the client actually needs\n\n• Support pipeline ",
-   "compensation": {
-    "compensationTierSummary": null,
-    "scrapeableCompensationSalarySummary": null,
-    "compensationTiers": [],
-    "summaryComponents": []
-   }
-  },
-  {
-   "id": "7c42207a-bb56-413c-839f-9ad692df840e",
-   "title": "Data Scientist - Evaluations, Chanakya",
-   "department": "Engineering",
-   "team": "Engineering",
-   "employmentType": "FullTime",
-   "location": "Bengaluru",
-   "shouldDisplayCompensationOnJobPostings": false,
-   "secondaryLocations": [],
-   "publishedAt": "2026-04-17T11:56:48.684+00:00",
-   "isListed": true,
-   "isRemote": false,
-   "workplaceType": "OnSite",
-   "address": {
-    "postalAddress": {
-     "addressRegion": "Karnataka",
-     "addressCountry": "India",
-     "addressLocality": "Bengaluru"
-    }
-   },
-   "jobUrl": "https://jobs.ashbyhq.com/sarvam/7c42207a-bb56-413c-839f-9ad692df840e",
-   "applyUrl": "https://jobs.ashbyhq.com/sarvam/7c42207a-bb56-413c-839f-9ad692df840e/application",
-   "descriptionHtml": "<p style=\"min-height:1.5em\"><strong>About Sarvam</strong></p><p style=\"min-height:1.5em\">Sarvam is building the bedrock of Sovereign AI for India. The company is developing India's full-stack sovereign AI platform, building across research, models, infrastructure and applications with a singular focus on making AI genuinely work for India. Sarvam works with leading enterprises and public institutions and is backed by Lightspeed, Peak XV, and Khosla Ventures. Sarvam partners with India's leading brands, including Tata Capital, SBI Life, CRED, IDFC, and LIC.</p><p style=\"min-height:1.5em\"> </p><p style=\"min-height:1.5em\"><strong>About the Role</strong></p><p style=\"min-height:1.5em\">This is an intellectually demanding role. The Data Scientist anchors the evaluations function for this vertical — designing, building, and maintaining evaluation frameworks that measure model and system quality in operational context. You are not running standard benchmarks. You are building domain-specific eval harnesses for high-stakes use cases where a wrong answer carries real consequences.</p><p style=\"min-height:1.5em\">You will work closely with the MLOps Engineer, the PM, and the deployment team. The evaluations you design are the mechanism by which the team determines whether what we've built is good enough to deploy — and whether it stays good after deployment.</p><p style=\"min-height:1.5em\"> </p><p style=\"min-height:1.5em\"><strong>What You'll Do</strong></p><p style=\"min-height:1.5em\">•  D",
-   "descriptionPlain": "About Sarvam\n\nSarvam is building the bedrock of Sovereign AI for India. The company is developing India's full-stack sovereign AI platform, building across research, models, infrastructure and applications with a singular focus on making AI genuinely work for India. Sarvam works with leading enterprises and public institutions and is backed by Lightspeed, Peak XV, and Khosla Ventures. Sarvam partners with India's leading brands, including Tata Capital, SBI Life, CRED, IDFC, and LIC.\n\n \n\nAbout the Role\n\nThis is an intellectually demanding role. The Data Scientist anchors the evaluations function for this vertical — designing, building, and maintaining evaluation frameworks that measure model and system quality in operational context. You are not running standard benchmarks. You are building domain-specific eval harnesses for high-stakes use cases where a wrong answer carries real consequences.\n\nYou will work closely with the MLOps Engineer, the PM, and the deployment team. The evaluations you design are the mechanism by which the team determines whether what we've built is good enough to deploy — and whether it stays good after deployment.\n\n \n\nWhat You'll Do\n\n•  Design and build evaluation frameworks for Sarvam's AI outputs across domain-specific requirements: document comprehension, command summarisation, geospatial reasoning, enterprise workflow automation, and others as they emerge\n\n•  Define quality metrics in collaboration with domain experts and clients; translate operat",
-   "compensation": {
-    "compensationTierSummary": null,
-    "scrapeableCompensationSalarySummary": null,
-    "compensationTiers": [],
-    "summaryComponents": []
-   }
-  },
-  {
-   "id": "dc047f4f-97be-4bb3-a9f1-cebbfc4de3e6",
-   "title": "Embedded Data Scientist, Chanakya",
-   "department": "Engineering",
-   "team": "Engineering",
-   "employmentType": "FullTime",
-   "location": "Delhi",
-   "shouldDisplayCompensationOnJobPostings": false,
-   "secondaryLocations": [],
-   "publishedAt": "2026-04-17T11:59:15.600+00:00",
-   "isListed": true,
-   "isRemote": false,
-   "workplaceType": "OnSite",
-   "address": {
-    "postalAddress": {
-     "addressRegion": "Delhi",
-     "addressCountry": "India",
-     "addressLocality": "Delhi"
-    }
-   },
-   "jobUrl": "https://jobs.ashbyhq.com/sarvam/dc047f4f-97be-4bb3-a9f1-cebbfc4de3e6",
-   "applyUrl": "https://jobs.ashbyhq.com/sarvam/dc047f4f-97be-4bb3-a9f1-cebbfc4de3e6/application",
-   "descriptionHtml": "<p style=\"min-height:1.5em\"><strong>About Sarvam</strong></p><p style=\"min-height:1.5em\">Sarvam is building the bedrock of Sovereign AI for India. The company is developing India's full-stack sovereign AI platform, building across research, models, infrastructure and applications with a singular focus on making AI genuinely work for India. Sarvam works with leading enterprises and public institutions and is backed by Lightspeed, Peak XV, and Khosla Ventures. Sarvam partners with India's leading brands, including Tata Capital, SBI Life, CRED, IDFC, and LIC.</p><p style=\"min-height:1.5em\"><strong>About the Role</strong></p><p style=\"min-height:1.5em\">Embedded Data Scientists transform complex client data into structures that AI systems can reliably reason over. You are deployed alongside Strategic Deployment Engineers at client sites, working directly with client data environments to understand, structure, and operationalise large-scale datasets.</p><p style=\"min-height:1.5em\">This means working with heterogeneous, multimodal data — including documents, images, audio, geospatial data, and structured records — and designing the semantic structures that allow AI systems to interpret and reason over that data.</p><p style=\"min-height:1.5em\">You will define how data is represented inside the AI system: how documents are segmented, how metadata is defined, how entities and relationships are represented, and how different data modalities connect. You will design ontologies, tagging s",
-   "descriptionPlain": "About Sarvam\n\nSarvam is building the bedrock of Sovereign AI for India. The company is developing India's full-stack sovereign AI platform, building across research, models, infrastructure and applications with a singular focus on making AI genuinely work for India. Sarvam works with leading enterprises and public institutions and is backed by Lightspeed, Peak XV, and Khosla Ventures. Sarvam partners with India's leading brands, including Tata Capital, SBI Life, CRED, IDFC, and LIC.\n\nAbout the Role\n\nEmbedded Data Scientists transform complex client data into structures that AI systems can reliably reason over. You are deployed alongside Strategic Deployment Engineers at client sites, working directly with client data environments to understand, structure, and operationalise large-scale datasets.\n\nThis means working with heterogeneous, multimodal data — including documents, images, audio, geospatial data, and structured records — and designing the semantic structures that allow AI systems to interpret and reason over that data.\n\nYou will define how data is represented inside the AI system: how documents are segmented, how metadata is defined, how entities and relationships are represented, and how different data modalities connect. You will design ontologies, tagging systems, and knowledge graph structures that allow the reasoning engine to operate effectively.\n\nYou will often work with classified or operationally sensitive datasets in environments where standard tooling may n",
-   "compensation": {
-    "compensationTierSummary": null,
-    "scrapeableCompensationSalarySummary": null,
-    "compensationTiers": [],
-    "summaryComponents": []
-   }
-  },
-  {
-   "id": "b2201b5e-1e96-497a-962c-bca1768f75fd",
-   "title": "Embedded Infrastructure Engineer, Chanakya",
-   "department": "Engineering",
-   "team": "Engineering",
-   "employmentType": "FullTime",
-   "location": "Delhi",
-   "shouldDisplayCompensationOnJobPostings": false,
-   "secondaryLocations": [],
-   "publishedAt": "2026-04-17T12:01:22.644+00:00",
-   "isListed": true,
-   "isRemote": false,
-   "workplaceType": "OnSite",
-   "address": {
-    "postalAddress": {
-     "addressRegion": "Delhi",
-     "addressCountry": "India",
-     "addressLocality": "Delhi"
-    }
-   },
-   "jobUrl": "https://jobs.ashbyhq.com/sarvam/b2201b5e-1e96-497a-962c-bca1768f75fd",
-   "applyUrl": "https://jobs.ashbyhq.com/sarvam/b2201b5e-1e96-497a-962c-bca1768f75fd/application",
-   "descriptionHtml": "<p style=\"min-height:1.5em\"><strong>About Sarvam</strong></p><p style=\"min-height:1.5em\">Sarvam is building the bedrock of Sovereign AI for India. The company is developing India's full-stack sovereign AI platform, building across research, models, infrastructure and applications with a singular focus on making AI genuinely work for India. Sarvam works with leading enterprises and public institutions and is backed by Lightspeed, Peak XV, and Khosla Ventures. Sarvam partners with India's leading brands, including Tata Capital, SBI Life, CRED, IDFC, and LIC.</p><p style=\"min-height:1.5em\"> </p><p style=\"min-height:1.5em\"><strong>About the Role</strong></p><p style=\"min-height:1.5em\">Embedded Infrastructure Engineers design, build, and maintain the data infrastructure that underpins AI system deployments at client sites. You work alongside Embedded Data Scientists and Strategic Deployment Engineers to ensure that terabyte-scale datasets can be ingested, stored, queried, and served to AI reasoning engines reliably and performantly.</p><p style=\"min-height:1.5em\">This means building and operating data platforms that handle terabyte-scale persistent data stores and sustained large daily ingestion volumes across structured records, documents, imagery, audio, and geospatial data. You will design and maintain the databases, object stores, ingestion pipelines, and processing layers that make this possible.</p><p style=\"min-height:1.5em\">You will make critical decisions about storage ar",
-   "descriptionPlain": "About Sarvam\n\nSarvam is building the bedrock of Sovereign AI for India. The company is developing India's full-stack sovereign AI platform, building across research, models, infrastructure and applications with a singular focus on making AI genuinely work for India. Sarvam works with leading enterprises and public institutions and is backed by Lightspeed, Peak XV, and Khosla Ventures. Sarvam partners with India's leading brands, including Tata Capital, SBI Life, CRED, IDFC, and LIC.\n\n \n\nAbout the Role\n\nEmbedded Infrastructure Engineers design, build, and maintain the data infrastructure that underpins AI system deployments at client sites. You work alongside Embedded Data Scientists and Strategic Deployment Engineers to ensure that terabyte-scale datasets can be ingested, stored, queried, and served to AI reasoning engines reliably and performantly.\n\nThis means building and operating data platforms that handle terabyte-scale persistent data stores and sustained large daily ingestion volumes across structured records, documents, imagery, audio, and geospatial data. You will design and maintain the databases, object stores, ingestion pipelines, and processing layers that make this possible.\n\nYou will make critical decisions about storage architecture, indexing strategies, pipeline orchestration, and system performance — often in constrained, air-gapped, or operationally sensitive environments where you cannot rely on managed cloud services or standard enterprise tooling. You wi",
-   "compensation": {
-    "compensationTierSummary": null,
-    "scrapeableCompensationSalarySummary": null,
-    "compensationTiers": [],
-    "summaryComponents": []
-   }
-  }
- ]
+  ]
 }

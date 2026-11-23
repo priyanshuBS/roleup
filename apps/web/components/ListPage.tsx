@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { X } from 'lucide-react';
+import { Briefcase, X, type LucideIcon } from 'lucide-react';
 import {
   COMPANY_TAG_LABELS,
   FILTER_KEYS,
@@ -18,8 +18,10 @@ import {
 import type { ListFilters } from '@roleup/db';
 import { getJobs, getMeta } from '@/lib/data';
 import { listHref, type FilterState } from '@/lib/urls';
-import { FilterPanel } from './FilterPanel';
+import { FilterFacets, SearchBox } from './FilterPanel';
 import { JobList } from './JobList';
+import { MobileFilters } from './MobileFilters';
+import { MetaPill, PageHeader } from './PageHeader';
 
 export type SearchParams = Promise<Record<string, string | string[] | undefined>>;
 
@@ -76,6 +78,9 @@ export async function ListPage({
   above,
   hero,
   emptyText,
+  icon = Briefcase,
+  eyebrow = 'Jobs',
+  listHeading = { eyebrow: '', title: 'Latest openings' },
 }: {
   basePath: string;
   searchParams: SearchParams;
@@ -89,6 +94,10 @@ export async function ListPage({
   /** Replaces the title block (home page). */
   hero?: React.ReactNode;
   emptyText?: string;
+  icon?: LucideIcon;
+  eyebrow?: string;
+  /** Heading above the list when a custom hero replaces the title block. */
+  listHeading?: { eyebrow: string; title: string };
 }) {
   const sp = await searchParams;
   const withDefaults = {
@@ -112,25 +121,57 @@ export async function ListPage({
     ([k, v]) => v && !(k in defaults && defaults[k] === v),
   );
 
+  const facetProps = { basePath, filters: state, urlState, meta, locked, defaults };
+  const filterCount = active.filter(([k]) => k !== 'q').length;
+
   return (
     <div>
       {hero ?? (
-        <div className="mb-5">
-          <h1 className="text-xl font-semibold tracking-tight sm:text-2xl">{title}</h1>
-          <p className="mt-1 text-sm text-text-muted tabular-nums">
-            {formatCount(total)} open tech {total === 1 ? 'job' : 'jobs'}
-            {meta.lastCrawledAt && <> · updated {timeAgo(meta.lastCrawledAt)}</>}
-          </p>
-          {intro && <div className="mt-2 max-w-2xl text-sm text-text-muted">{intro}</div>}
-        </div>
+        <PageHeader
+          icon={icon}
+          eyebrow={eyebrow}
+          title={title}
+          description={intro}
+          meta={
+            <>
+              <MetaPill>
+                <span className="num font-medium text-text">{formatCount(total)}</span> open{' '}
+                {total === 1 ? 'job' : 'jobs'}
+              </MetaPill>
+              {meta.lastCrawledAt && <MetaPill>updated {timeAgo(meta.lastCrawledAt)}</MetaPill>}
+            </>
+          }
+        />
+      )}
+      {hero && (
+        <h2 id="jobs" className="mb-5 scroll-mt-24 text-xl font-semibold tracking-[-0.02em]">
+          {listHeading.title}
+        </h2>
       )}
       {above}
-      <div className="flex flex-col gap-4 lg:flex-row lg:gap-6">
-        <FilterPanel basePath={basePath} filters={state} meta={meta} locked={locked} />
-        <section aria-label="Jobs" className="min-w-0 flex-1">
-          <div className="mb-3 flex flex-wrap items-center gap-2">
-            <p className="mr-1 text-sm text-text-muted tabular-nums" aria-live="polite">
-              <span className="font-semibold text-text">{formatCount(total)}</span>{' '}
+      <div className="lg:grid lg:grid-cols-[224px_minmax(0,1fr)] lg:gap-10">
+        <aside aria-label="Filters" className="hidden lg:block">
+          <div className="sticky top-20 max-h-[calc(100dvh-6rem)] overflow-y-auto pb-6 pr-1">
+            <FilterFacets {...facetProps} />
+          </div>
+        </aside>
+        <section aria-label="Jobs" className="min-w-0">
+          <div className="mb-4 flex gap-2">
+            {!hero || urlState.q ? (
+              <SearchBox basePath={basePath} urlState={urlState} />
+            ) : (
+              <div className="hidden flex-1 lg:block" />
+            )}
+            <MobileFilters
+              activeCount={filterCount}
+              clearHref={Object.keys(urlState).length ? basePath : undefined}
+            >
+              <FilterFacets {...facetProps} />
+            </MobileFilters>
+          </div>
+          <div className="mb-3 flex min-h-7 flex-wrap items-center gap-1.5 text-sm">
+            <p className="mr-2 text-text-muted" aria-live="polite">
+              <span className="num font-medium text-text">{formatCount(total)}</span>{' '}
               {total === 1 ? 'job' : 'jobs'}
               <span className="text-text-subtle"> · newest first</span>
             </p>
@@ -138,17 +179,19 @@ export async function ListPage({
               <Link
                 key={k}
                 href={listHref(basePath, { ...urlState, [k]: undefined })}
-                className="inline-flex h-7 items-center gap-1 rounded-full border border-accent/40 bg-accent-subtle pl-2.5 pr-2 text-xs font-medium text-accent hover:border-accent"
+                scroll={false}
+                className="inline-flex h-7 items-center gap-1 rounded-md border border-border bg-surface pl-2.5 pr-1.5 text-xs font-medium text-text hover:border-border-strong"
                 aria-label={`Remove filter ${chipLabel(k, v, meta)}`}
               >
                 {chipLabel(k, v, meta)}
-                <X size={12} aria-hidden />
+                <X size={12} aria-hidden className="text-text-subtle" />
               </Link>
             ))}
             {active.length > 1 && (
               <Link
                 href={basePath}
-                className="text-xs text-text-muted underline-offset-2 hover:text-text hover:underline"
+                scroll={false}
+                className="ml-1 text-xs text-text-muted underline-offset-2 hover:text-text hover:underline"
               >
                 Clear all
               </Link>

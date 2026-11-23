@@ -1,6 +1,7 @@
 /**
- * Read funding-news RSS feeds, extract facts with deterministic rules, and queue them for
- * review. Nothing is public until an admin approves it.
+ * Read funding-news RSS feeds, extract facts with deterministic rules, then verify them
+ * (verify-funding.ts). Verified entries are approved automatically when that is switched on in
+ * /admin/settings; the rest wait in the admin review queue.
  *
  *   pnpm track-funding            # all feeds
  *   pnpm track-funding --dry-run  # print what would be queued, no DB writes
@@ -18,6 +19,7 @@ import { FUNDING_SOURCES } from './funding-sources';
 import { hasFlag, loadEnv, openDb, usdInrRate } from './lib/env';
 import { politeFetch } from './lib/http';
 import { parseFeed, type FeedItem } from './lib/rss';
+import { verifyFundings } from './verify-funding';
 
 /** Normalize URLs so the same article from two feeds dedupes (drop tracking params, fragments). */
 export function canonicalUrl(u: string): string {
@@ -128,6 +130,8 @@ async function main() {
         });
       }
     }
+    // Score everything new (and re-check older entries); approve what passes.
+    const verified = await verifyFundings(db);
     const retagged = await refreshRecentlyFundedTags(db);
     await db
       .update(crawlRuns)
@@ -135,12 +139,12 @@ async function main() {
         finishedAt: new Date(),
         jobsAdded: added,
         companiesOk: newCompanies,
-        jobsUpdated: retagged,
+        jobsUpdated: retagged + verified.autoApproved,
         errors,
       })
       .where(eq(crawlRuns.id, run!.id));
     console.log(
-      `done: ${added} queued for review, ${newCompanies} new companies, ${retagged} tag changes`,
+      `done: ${added} new, ${verified.autoApproved} auto-approved, ${newCompanies} new companies, ${retagged} tag changes`,
     );
   } finally {
     await close();

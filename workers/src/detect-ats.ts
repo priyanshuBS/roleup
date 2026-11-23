@@ -7,35 +7,13 @@
  *
  * Respects robots.txt. Verifies the detected board actually responds before saving.
  */
+import { pathToFileURL } from 'node:url';
 import { and, companies, eq, isNotNull, or, type Company } from '@roleup/db';
 import { argValue, loadEnv, openDb } from './lib/env';
-import { detectAts, robotsAllows, type AtsDetection } from './lib/detect';
-import { HttpError, mapLimit, politeFetch } from './lib/http';
+import { detectAts, type AtsDetection } from './lib/detect';
+import { mapLimit, politeFetch } from './lib/http';
+import { allowedByRobots } from './lib/page';
 import { FETCHERS } from './sources';
-
-const robotsCache = new Map<string, string>();
-
-async function allowedByRobots(url: URL): Promise<boolean> {
-  let txt = robotsCache.get(url.origin);
-  if (txt === undefined) {
-    try {
-      const res = await politeFetch(`${url.origin}/robots.txt`, {
-        accept: 'text/plain',
-        retries: 1,
-        timeoutMs: 10_000,
-      });
-      txt = await res.text();
-    } catch (err) {
-      // No robots.txt (404) means allowed. Other failures: be conservative.
-      txt =
-        err instanceof HttpError && err.status >= 400 && err.status < 500
-          ? ''
-          : 'User-agent: *\nDisallow: /';
-    }
-    robotsCache.set(url.origin, txt);
-  }
-  return robotsAllows(txt, url.pathname + url.search);
-}
 
 export async function detectFromUrl(
   careersUrl: string,
@@ -132,4 +110,5 @@ async function main() {
   }
 }
 
-await main();
+// Run only when executed directly (discover-companies imports detectFromUrl).
+if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) await main();

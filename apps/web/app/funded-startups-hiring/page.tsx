@@ -1,7 +1,18 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import {
+  ArrowRight,
+  ArrowUpRight,
+  Banknote,
+  CalendarDays,
+  Hourglass,
+  TrendingUp,
+  Users,
+} from 'lucide-react';
 import { daysBetween, formatInrCompact, formatUsdCompact, type FundingItem } from '@roleup/core';
 import { CompanyLogo } from '@/components/CompanyLogo';
+import { EmptyState } from '@/components/JobList';
+import { MetaPill, PageHeader } from '@/components/PageHeader';
 import { getFunding } from '@/lib/data';
 import { companyHref } from '@/lib/urls';
 
@@ -11,6 +22,9 @@ export const metadata: Metadata = {
     'Startups that recently raised money, with the round, amount, date, source, and their open tech jobs.',
   alternates: { canonical: '/funded-startups-hiring' },
 };
+
+// Rendered on request (data is still cached for 10 minutes), so builds never need the database.
+export const dynamic = 'force-dynamic';
 
 function amountText(f: FundingItem): string | null {
   const parts: string[] = [];
@@ -40,29 +54,49 @@ export default async function FundedPage() {
 
   return (
     <div>
-      <h1 className="text-xl font-semibold tracking-tight">Recently funded startups hiring</h1>
-      <p className="mt-1 mb-5 max-w-2xl text-sm text-text-muted">
-        Funding rounds from public news, checked by a person before they appear. Amounts are shown
-        as reported, converted at a fixed rate. Each card links to the original source.
-      </p>
+      <PageHeader
+        icon={TrendingUp}
+        eyebrow="Funding"
+        title="Recently funded startups hiring"
+        description="Funding rounds from public news, checked by a person before they appear. Amounts are shown as reported, converted at a fixed rate. Each card links to the original source."
+        meta={
+          items.length > 0 && (
+            <>
+              <MetaPill>
+                <span className="num font-semibold text-text">{items.length}</span> funded companies
+              </MetaPill>
+              <MetaPill live>
+                <span className="num font-semibold text-text">{hiring.length}</span> hiring now
+              </MetaPill>
+            </>
+          )
+        }
+      />
       {items.length === 0 ? (
-        <p className="rounded-md border border-border bg-surface px-4 py-10 text-center text-text-muted">
-          No reviewed funding rounds yet.
-        </p>
+        <EmptyState
+          icon={Banknote}
+          title="No reviewed rounds yet"
+          text="Funding news is reviewed by a person before it appears here. Check back soon."
+        />
       ) : (
         <>
           <FundingGrid items={hiring} now={now} />
           {notYet.length > 0 && (
-            <>
-              <h2 className="mt-8 mb-2 text-md font-semibold">
-                Recently funded, no tracked openings yet
-              </h2>
-              <p className="mb-3 text-sm text-text-muted">
-                We haven&apos;t found a public job board for these companies, or they have no open
-                tech roles.
-              </p>
+            <section className="mt-14">
+              <div className="mb-5 flex items-center gap-3">
+                <span className="icon-tile !bg-surface-muted !text-text-muted">
+                  <Hourglass size={17} aria-hidden />
+                </span>
+                <div>
+                  <h2 className="display text-xl">Recently funded, no tracked openings yet</h2>
+                  <p className="text-sm text-text-muted">
+                    We haven&apos;t found a public job board for these companies, or they have no
+                    open tech roles.
+                  </p>
+                </div>
+              </div>
               <FundingGrid items={notYet} now={now} />
-            </>
+            </section>
           )}
         </>
       )}
@@ -73,47 +107,60 @@ export default async function FundedPage() {
 function FundingGrid({ items, now }: { items: FundingItem[]; now: Date }) {
   if (items.length === 0) return null;
   return (
-    <ul className="grid grid-cols-1 gap-px overflow-hidden rounded-md border border-border bg-border sm:grid-cols-2">
+    <ul className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
       {items.map((f) => {
         const amount = amountText(f);
+        const hiring = f.company.openJobsCount > 0;
         return (
-          <li key={f.id} className="flex gap-3 bg-surface p-4">
-            <CompanyLogo company={f.company} size={32} />
-            <div className="min-w-0 flex-1">
-              <div className="flex flex-wrap items-baseline justify-between gap-x-3">
-                <Link href={companyHref(f.company.slug)} className="font-medium hover:text-accent">
+          <li key={f.id} className="card card-interactive flex flex-col p-5">
+            <div className="flex items-start gap-3.5">
+              <CompanyLogo company={f.company} size={44} />
+              <div className="min-w-0 flex-1">
+                <Link
+                  href={companyHref(f.company.slug)}
+                  className="block truncate font-semibold transition-colors hover:text-accent"
+                >
                   {f.company.name}
                 </Link>
-                <span className="text-xs text-text-subtle tabular-nums">
+                <p className="mt-0.5 inline-flex items-center gap-1 text-xs text-text-subtle">
+                  <CalendarDays size={12} aria-hidden />
                   {raisedAgo(f.announcedOn, now)}
-                </span>
+                </p>
               </div>
-              <p className="mt-0.5 text-sm">
-                <span className="font-medium">
-                  {f.round === 'Undisclosed' ? 'Funding round' : f.round}
-                </span>
-                {amount && <span className="tabular-nums text-text-muted"> · {amount}</span>}
-              </p>
-              {f.investors.length > 0 && (
-                <p className="mt-0.5 truncate text-xs text-text-muted">{f.investors.join(', ')}</p>
+              <span className="tag tag-accent shrink-0">
+                {f.round === 'Undisclosed' ? 'Funding round' : f.round}
+              </span>
+            </div>
+            <p className="display num mt-5 text-[1.625rem] leading-none">
+              {amount ?? (
+                <span className="text-base font-medium text-text-subtle">Amount undisclosed</span>
               )}
-              <div className="mt-2 flex items-center justify-between gap-3 text-sm">
-                {f.company.openJobsCount > 0 ? (
-                  <Link href={companyHref(f.company.slug)} className="link tabular-nums">
-                    {f.company.openJobsCount} open {f.company.openJobsCount === 1 ? 'job' : 'jobs'}
-                  </Link>
-                ) : (
-                  <span className="text-text-subtle">No open jobs tracked</span>
-                )}
-                <a
-                  href={f.sourceUrl}
-                  target="_blank"
-                  rel="noopener noreferrer nofollow"
-                  className="text-xs text-text-muted hover:text-text"
-                >
-                  Source: {f.sourceName}
-                </a>
-              </div>
+            </p>
+            {f.investors.length > 0 && (
+              <p className="mt-2 flex items-start gap-1.5 text-xs text-text-muted">
+                <Users size={13} aria-hidden className="mt-px shrink-0 text-text-subtle" />
+                <span className="line-clamp-2">{f.investors.join(', ')}</span>
+              </p>
+            )}
+            <div className="mt-auto flex items-center justify-between gap-3 pt-5">
+              {hiring ? (
+                <Link href={companyHref(f.company.slug)} className="btn btn-sm btn-ink">
+                  <span className="num">{f.company.openJobsCount}</span> open{' '}
+                  {f.company.openJobsCount === 1 ? 'job' : 'jobs'}
+                  <ArrowRight size={13} aria-hidden />
+                </Link>
+              ) : (
+                <span className="text-xs text-text-subtle">No open jobs tracked</span>
+              )}
+              <a
+                href={f.sourceUrl}
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+                className="inline-flex items-center gap-1 text-xs text-text-muted transition-colors hover:text-accent"
+              >
+                {f.sourceName}
+                <ArrowUpRight size={12} aria-hidden />
+              </a>
             </div>
           </li>
         );

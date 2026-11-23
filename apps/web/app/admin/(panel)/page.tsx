@@ -13,8 +13,10 @@ import {
   jobs,
   ne,
 } from '@roleup/db';
+import { requireAdmin } from '@/lib/admin-auth';
 
 export default async function AdminOverview() {
+  await requireAdmin();
   const db = getDb();
   const [runs, [pending], [openJobs], [companyCount], failing] = await Promise.all([
     db.select().from(crawlRuns).orderBy(desc(crawlRuns.startedAt)).limit(20),
@@ -37,18 +39,16 @@ export default async function AdminOverview() {
 
   return (
     <div className="space-y-8">
-      <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-md border border-border bg-border sm:grid-cols-4">
+      <dl className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {[
           ['Open jobs', openJobs?.n ?? 0],
           ['Companies with ATS', companyCount?.n ?? 0],
           ['Funding pending review', pending?.n ?? 0],
           ['Companies failing', failing.length],
         ].map(([k, v]) => (
-          <div key={k} className="bg-surface p-3">
+          <div key={k} className="card p-4">
             <dt className="text-xs text-text-subtle">{k}</dt>
-            <dd className="mt-0.5 text-lg font-semibold tabular-nums">
-              {Number(v).toLocaleString('en-IN')}
-            </dd>
+            <dd className="display num mt-1 text-2xl">{Number(v).toLocaleString('en-IN')}</dd>
           </div>
         ))}
       </dl>
@@ -61,10 +61,10 @@ export default async function AdminOverview() {
       )}
 
       <section>
-        <h2 className="mb-2 text-md font-semibold">Recent worker runs</h2>
-        <div className="overflow-x-auto rounded-md border border-border bg-surface">
+        <h2 className="display mb-3 text-lg">Recent worker runs</h2>
+        <div className="overflow-x-auto card">
           <table className="w-full text-sm tabular-nums">
-            <thead className="text-left text-xs text-text-subtle">
+            <thead className="bg-surface-muted/60 text-left text-xs text-text-subtle">
               <tr className="border-b border-border">
                 <th className="p-2 font-medium">Worker</th>
                 <th className="p-2 font-medium">Started</th>
@@ -116,11 +116,11 @@ export default async function AdminOverview() {
       </section>
 
       <section>
-        <h2 className="mb-2 text-md font-semibold">Companies with crawl problems</h2>
+        <h2 className="display mb-3 text-lg">Companies with crawl problems</h2>
         {failing.length === 0 ? (
           <p className="text-sm text-text-muted">None.</p>
         ) : (
-          <ul className="rounded-md border border-border bg-surface text-sm">
+          <ul className="card text-sm">
             {failing.map((c) => (
               <li key={c.slug} className="border-b border-border p-2 last:border-0">
                 <Link href={`/admin/companies?edit=${c.slug}`} className="link">

@@ -5,11 +5,11 @@ import { companyHref, jobHref } from '@/lib/urls';
 import { CompanyLogo } from './CompanyLogo';
 import { SaveButton } from './SaveButton';
 
-const MODE_TAG: Partial<Record<JobListItem['remoteType'], string>> = {
-  remote_india: 'tag-success',
-  remote_global: 'tag-accent',
-  remote_restricted: 'tag-warning',
-  hybrid: '',
+/** Remote eligibility is the one label that changes whether you can apply, so it gets colour. */
+const MODE_CLASS: Partial<Record<JobListItem['remoteType'], string>> = {
+  remote_india: 'text-success',
+  remote_global: 'text-success',
+  remote_restricted: 'text-warning',
 };
 
 function place(job: JobListItem): string {
@@ -18,95 +18,109 @@ function place(job: JobListItem): string {
   return job.locationRaw.split(/[;|]/)[0]?.trim() || 'India';
 }
 
+function Dot() {
+  return (
+    <span aria-hidden className="text-border-strong">
+      ·
+    </span>
+  );
+}
+
+/** One job in a list. Rendered inside a <ul> with dividers (see JobList). */
 export function JobRow({ job, now }: { job: JobListItem; now: Date }) {
   const salary = salaryLabel(job);
   const yc = job.company.tags.includes('yc');
   const funded = job.company.tags.includes('recently_funded');
   const posted = job.postedAt ?? job.firstSeenAt;
   const fresh = now.getTime() - new Date(posted).getTime() < 48 * 3_600_000;
-  const modeClass = MODE_TAG[job.remoteType];
   const location = place(job);
+  const remote = job.remoteType !== 'onsite';
   return (
-    <li className="group relative flex gap-3.5 border-b border-border px-3 py-3.5 transition-colors last:border-b-0 hover:bg-surface-muted/70 sm:px-4">
-      <span
-        aria-hidden
-        className="absolute inset-y-0 left-0 w-0.5 bg-accent opacity-0 transition-opacity group-hover:opacity-100"
-      />
+    <li className="group relative flex gap-3.5 px-4 py-4 transition-colors hover:bg-surface-muted/60 sm:gap-4 sm:px-5">
       <div className="pt-0.5">
-        <CompanyLogo company={job.company} size={36} />
+        <CompanyLogo company={job.company} size={40} />
       </div>
       <div className="min-w-0 flex-1">
-        <div className="flex items-start gap-3">
-          <div className="min-w-0 flex-1">
-            <h2 className="text-base font-semibold leading-snug text-text">
-              <Link
-                href={jobHref(job.slug)}
-                className="after:absolute after:inset-0 group-hover:text-accent"
-              >
-                {job.title}
-              </Link>
-            </h2>
-            <p className="mt-0.5 flex flex-wrap items-center gap-x-1.5 text-sm text-text-muted">
-              <Link
-                href={companyHref(job.company.slug)}
-                className="relative z-10 inline-flex min-h-6 items-center font-medium text-text hover:underline underline-offset-2"
-              >
-                {job.company.name}
-              </Link>
-              <span aria-hidden className="text-text-subtle">
-                ·
-              </span>
-              <span>{location}</span>
-              <span aria-hidden className="text-text-subtle">
-                ·
-              </span>
-              <span>{LEVEL_LABELS[job.level]}</span>
-            </p>
-          </div>
-          <div className="hidden shrink-0 flex-col items-end gap-1 text-right sm:flex">
-            {salary ? (
-              <span className="text-sm font-semibold tabular-nums text-text">{salary}</span>
-            ) : (
-              <span className="text-xs text-text-subtle">Salary not disclosed</span>
-            )}
-            <time dateTime={posted} className="text-xs tabular-nums text-text-subtle">
-              {timeAgo(posted, now)}
-            </time>
-          </div>
-          <div className="relative z-10 -mr-1 shrink-0">
-            <SaveButton
-              job={{
-                id: job.id,
-                slug: job.slug,
-                title: job.title,
-                companyName: job.company.name,
-                companySlug: job.company.slug,
-                location:
-                  modeClass !== undefined
-                    ? `${location} · ${REMOTE_TYPE_SHORT[job.remoteType]}`
-                    : location,
-                salary,
-              }}
-            />
-          </div>
-        </div>
-        <div className="mt-2 flex flex-wrap items-center gap-1.5">
-          {modeClass !== undefined && (
-            <span className={`tag ${modeClass}`}>{REMOTE_TYPE_SHORT[job.remoteType]}</span>
-          )}
+        <p className="flex flex-wrap items-center gap-x-1.5 text-[0.8125rem] text-text-muted">
+          <Link
+            href={companyHref(job.company.slug)}
+            className="relative z-10 font-medium text-text hover:underline"
+          >
+            {job.company.name}
+          </Link>
           {yc && (
-            <span className="tag tag-accent">
-              YC{job.company.ycBatch ? ` ${job.company.ycBatch}` : ''}
+            <>
+              <Dot />
+              <span>YC{job.company.ycBatch ? ` ${job.company.ycBatch}` : ''}</span>
+            </>
+          )}
+          {funded && (
+            <>
+              <Dot />
+              <span>Recently funded</span>
+            </>
+          )}
+        </p>
+        <h2 className="mt-0.5 break-words text-[1rem] font-semibold leading-snug tracking-[-0.01em]">
+          <Link
+            href={jobHref(job.slug)}
+            className="after:absolute after:inset-0 group-hover:underline group-hover:decoration-border-strong group-hover:underline-offset-4"
+          >
+            {job.title}
+          </Link>
+        </h2>
+        <p className="mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[0.8125rem] text-text-muted">
+          {/* Remote jobs without a city: the remote label alone says where. */}
+          {!(remote && !job.city && job.remoteType !== 'hybrid') && (
+            <>
+              <span>{location}</span>
+              {remote && <Dot />}
+            </>
+          )}
+          {remote && (
+            <span className={MODE_CLASS[job.remoteType]}>{REMOTE_TYPE_SHORT[job.remoteType]}</span>
+          )}
+          <Dot />
+          <span>{LEVEL_LABELS[job.level]}</span>
+          {salary && (
+            <span className="contents sm:hidden">
+              <Dot />
+              <span className="num font-medium text-text">{salary}</span>
             </span>
           )}
-          {funded && <span className="tag tag-success">Recently funded</span>}
-          {fresh && <span className="tag">New</span>}
-          {/* Phone: salary and time move here. */}
-          <span className="ml-auto flex items-center gap-2 text-xs tabular-nums text-text-subtle sm:hidden">
-            {salary && <span className="font-semibold text-text">{salary}</span>}
-            <time dateTime={posted}>{timeAgo(posted, now)}</time>
-          </span>
-        </div>
+        </p>
+      </div>
+      <div className="hidden shrink-0 flex-col items-end gap-1 pt-0.5 text-right sm:flex">
+        <span className="num text-sm font-semibold">{salary ?? ''}</span>
+        <span className="flex items-center gap-1.5 text-xs text-text-subtle">
+          {fresh && <span className="font-medium text-accent">New</span>}
+          <time dateTime={posted} className="num">
+            {timeAgo(posted, now)}
+          </time>
+        </span>
+      </div>
+      <div className="relative z-10 -mr-1.5 shrink-0">
+        <SaveButton
+          job={{
+            id: job.id,
+            slug: job.slug,
+            title: job.title,
+            companyName: job.company.name,
+            companySlug: job.company.slug,
+            location: remote ? `${location} · ${REMOTE_TYPE_SHORT[job.remoteType]}` : location,
+            salary,
+          }}
+        />
+        <time
+          dateTime={posted}
+          className="num mt-1 block text-center text-[11px] text-text-subtle sm:hidden"
+        >
+          {fresh ? (
+            <span className="font-medium text-accent">New</span>
+          ) : (
+            timeAgo(posted, now).replace(' ago', '')
+          )}
+        </time>
       </div>
     </li>
   );

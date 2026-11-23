@@ -4,10 +4,20 @@
  * First-party page view + click tracking. No cookies, no local storage, no third parties.
  * Honours Do Not Track and Global Privacy Control. Admin pages are never tracked.
  */
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 
-type Payload = { t: 'view' | 'click'; p: string; r?: string; k?: string; l?: string };
+type Payload = {
+  t: 'view' | 'click';
+  p: string;
+  r?: string;
+  k?: string;
+  l?: string;
+  /** Views: search text on list pages. */
+  q?: string;
+  /** Views: first page of this visit. */
+  e?: 1;
+};
 
 function optedOut(): boolean {
   const n = navigator as Navigator & { globalPrivacyControl?: boolean };
@@ -56,20 +66,25 @@ function describe(el: HTMLElement): { k: string; l: string } | null {
 
 export function Analytics() {
   const pathname = usePathname();
+  const q = (useSearchParams()?.get('q') ?? '').trim().toLowerCase().slice(0, 100);
   const lastView = useRef<string | null>(null);
 
   useEffect(() => {
     if (!pathname || pathname.startsWith('/admin') || optedOut()) return;
-    if (lastView.current === pathname) return;
+    // A new search on the same page counts as a new view (so searches can be reported).
+    const key = `${pathname}?${q}`;
+    if (lastView.current === key) return;
     const first = lastView.current === null;
-    lastView.current = pathname;
-    // External referrer only counts for the first page of the visit.
+    lastView.current = key;
     send({
       t: 'view',
       p: pathname,
+      ...(q ? { q } : {}),
+      // External referrer only counts for the first page of the visit.
+      ...(first ? { e: 1 as const } : {}),
       ...(first && document.referrer ? { r: document.referrer.slice(0, 500) } : {}),
     });
-  }, [pathname]);
+  }, [pathname, q]);
 
   useEffect(() => {
     const onClick = (ev: MouseEvent) => {

@@ -5,3 +5,5 @@ export * from './format';
 export * from './data/cities';
 export * from './classifiers';
 export * from './funding';
+export * from './settings';
+export * from './verify';

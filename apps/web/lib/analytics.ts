@@ -66,6 +66,8 @@ export const eventSchema = z.object({
   r: z.string().max(500).optional(),
   k: z.string().max(300).optional(),
   l: z.string().max(100).optional(),
+  q: z.string().max(100).optional(),
+  e: z.literal(1).optional(),
 });
 export type EventPayload = z.infer<typeof eventSchema>;
 

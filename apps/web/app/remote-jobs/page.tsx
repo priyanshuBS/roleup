@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { REMOTE_TYPE_LABELS } from '@roleup/core';
+import { Globe } from 'lucide-react';
 import { ChipNav } from '@/components/ChipNav';
 import { ListPage, type SearchParams } from '@/components/ListPage';
 import { getMeta } from '@/lib/data';
@@ -12,9 +13,10 @@ export const metadata: Metadata = {
 };
 
 export default async function RemoteJobsPage({ searchParams }: { searchParams: SearchParams }) {
+  // Read the request first so the page renders per request (never prerendered at build).
+  const sp = await searchParams;
   const meta = await getMeta();
   const count = (v: string) => meta.remote.find((r) => r.value === v)?.count;
-  const sp = await searchParams;
   const current =
     typeof sp.remote === 'string' ? `/remote-jobs?remote=${sp.remote}` : '/remote-jobs';
   return (
@@ -23,6 +25,8 @@ export default async function RemoteJobsPage({ searchParams }: { searchParams: S
       searchParams={searchParams}
       defaults={{ remote: 'any_remote' }}
       title="Remote tech jobs"
+      icon={Globe}
+      eyebrow="Remote"
       intro="Every remote role is labelled by who can apply. “India OK” names India, an Indian city, or APAC; “Global” says anywhere; “Restricted” names only other regions."
       above={
         <ChipNav

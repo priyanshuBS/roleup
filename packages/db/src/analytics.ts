@@ -12,6 +12,8 @@ export interface NewAnalyticsEvent {
   device: 'mobile' | 'tablet' | 'desktop';
   country?: string | null;
   visitor: string;
+  query?: string | null;
+  entry?: boolean;
 }
 
 /** Keep about 13 months; pruned opportunistically on write. */
@@ -252,4 +254,154 @@ export async function analyticsSummary(
     countries,
     activeNow: active?.n ?? 0,
   };
+}
+
+export interface AnalyticsInsights {
+  /** Visitor-days: each visitor counted once per IST day (the hash rotates daily). */
+  funnel: { visited: number; viewedJob: number; applied: number };
+  searches: { query: string; searches: number; visitors: number }[];
+  landing: { path: string; visits: number }[];
+  /** Views per IST hour of day, 0-23. */
+  hours: number[];
+  sections: { section: string; views: number }[];
+  companies: { slug: string; name: string; views: number }[];
+  appDownloads: number;
+}
+
+const SECTION = sql<string>`case
+  when ${analyticsEvents.path} = '/' then 'Home'
+  when ${analyticsEvents.path} ~ '^/jobs/in/' then 'City pages'
+  when ${analyticsEvents.path} ~ '^/jobs/salary/' then 'Salary pages'
+  when ${analyticsEvents.path} ~ '^/jobs/[^/]+$' then 'Job pages'
+  when ${analyticsEvents.path} ~ '^/remote-jobs' then 'Remote'
+  when ${analyticsEvents.path} ~ '^/companies' then 'Companies'
+  when ${analyticsEvents.path} ~ '^/yc-jobs' then 'YC'
+  when ${analyticsEvents.path} ~ '^/funded' then 'Funded startups'
+  when ${analyticsEvents.path} ~ '^/ats-checker' then 'Resume checker'
+  when ${analyticsEvents.path} ~ '^/saved' then 'Saved'
+  when ${analyticsEvents.path} ~ '^/app' then 'App page'
+  else 'Other' end`;
+
+export async function analyticsInsights(
+  db: Db,
+  days: number,
+  now: Date = new Date(),
+): Promise<AnalyticsInsights> {
+  const from = istMidnight(days - 1, now);
+  const inRange = and(gte(analyticsEvents.createdAt, from), lt(analyticsEvents.createdAt, now));
+  const views = and(inRange, eq(analyticsEvents.type, 'view'));
+
+  const [[funnel], searches, landing, hourRows, sections, jobCompanyRows, companyPageRows, [app]] =
+    await Promise.all([
+      db
+        .select({
+          visited: sql<number>`count(*)::int`,
+          viewedJob: sql<number>`count(*) filter (where d.job)::int`,
+          applied: sql<number>`count(*) filter (where d.apply)::int`,
+        })
+        .from(
+          db
+            .select({
+              job: sql<boolean>`bool_or(${analyticsEvents.type} = 'view' and ${isJobPage})`.as(
+                'job',
+              ),
+              apply:
+                sql<boolean>`bool_or(${analyticsEvents.type} = 'click' and ${analyticsEvents.target} like 'apply:%')`.as(
+                  'apply',
+                ),
+            })
+            .from(analyticsEvents)
+            .where(inRange)
+            .groupBy(day, analyticsEvents.visitor)
+            .as('d'),
+        ),
+      db
+        .select({
+          query: sql<string>`${analyticsEvents.query}`,
+          searches: count(),
+          visitors: visits,
+        })
+        .from(analyticsEvents)
+        .where(and(views, sql`${analyticsEvents.query} is not null`))
+        .groupBy(analyticsEvents.query)
+        .orderBy(desc(count()))
+        .limit(20),
+      db
+        .select({ path: analyticsEvents.path, visits: count() })
+        .from(analyticsEvents)
+        .where(and(views, eq(analyticsEvents.entry, true)))
+        .groupBy(analyticsEvents.path)
+        .orderBy(desc(count()))
+        .limit(10),
+      db
+        .select({
+          hour: sql<number>`extract(hour from ${analyticsEvents.createdAt} at time zone 'Asia/Kolkata')::int`,
+          views: count(),
+        })
+        .from(analyticsEvents)
+        .where(views)
+        .groupBy(sql`1`),
+      db
+        .select({ section: SECTION, views: count() })
+        .from(analyticsEvents)
+        .where(views)
+        .groupBy(sql`1`)
+        .orderBy(desc(count())),
+      db
+        .select({ slug: companies.slug, name: companies.name, views: count() })
+        .from(analyticsEvents)
+        .innerJoin(jobs, sql`${analyticsEvents.path} = '/jobs/' || ${jobs.slug}`)
+        .innerJoin(companies, eq(companies.id, jobs.companyId))
+        .where(views)
+        .groupBy(companies.slug, companies.name),
+      db
+        .select({ slug: companies.slug, name: companies.name, views: count() })
+        .from(analyticsEvents)
+        .innerJoin(companies, sql`${analyticsEvents.path} = '/companies/' || ${companies.slug}`)
+        .where(views)
+        .groupBy(companies.slug, companies.name),
+      db
+        .select({ n: count() })
+        .from(analyticsEvents)
+        .where(
+          and(
+            inRange,
+            eq(analyticsEvents.type, 'click'),
+            eq(analyticsEvents.target, 'app:download'),
+          ),
+        ),
+    ]);
+
+  const hours = Array.from({ length: 24 }, () => 0);
+  for (const r of hourRows) hours[r.hour] = r.views;
+  const byCompany = new Map<string, { slug: string; name: string; views: number }>();
+  for (const r of [...jobCompanyRows, ...companyPageRows]) {
+    const cur = byCompany.get(r.slug);
+    if (cur) cur.views += r.views;
+    else byCompany.set(r.slug, { ...r });
+  }
+
+  return {
+    funnel: {
+      visited: funnel?.visited ?? 0,
+      viewedJob: funnel?.viewedJob ?? 0,
+      applied: funnel?.applied ?? 0,
+    },
+    searches,
+    landing,
+    hours,
+    sections,
+    companies: [...byCompany.values()].sort((a, b) => b.views - a.views).slice(0, 10),
+    appDownloads: app?.n ?? 0,
+  };
+}
+
+/** Daily rows for CSV export. */
+export async function analyticsDailyCsv(db: Db, days: number, now: Date = new Date()) {
+  const s = await analyticsSummary(db, days, now);
+  const lines = [
+    'date,views,visitors,clicks',
+    ...s.daily.map((d) => `${d.day},${d.views},${d.visitors},${d.clicks}`),
+  ];
+  return lines.join('\n') + '\n';
 }

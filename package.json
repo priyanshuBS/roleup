@@ -21,6 +21,8 @@
     "crawl": "pnpm --filter @roleup/workers crawl",
     "sync-yc": "pnpm --filter @roleup/workers sync-yc",
     "track-funding": "pnpm --filter @roleup/workers track-funding",
+    "verify-funding": "pnpm --filter @roleup/workers verify-funding",
+    "discover-companies": "pnpm --filter @roleup/workers discover-companies",
     "detect-ats": "pnpm --filter @roleup/workers detect-ats"
   },
   "devDependencies": {

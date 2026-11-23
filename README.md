@@ -18,6 +18,7 @@ No accounts. No ads. Saved jobs stay on your device, and resumes are never store
 - [Commands](#commands)
 - [Admin panel](#admin-panel)
 - [Public API](#public-api)
+- [Run with Docker](#run-with-docker)
 - [Deployment](#deployment)
 - [Data sources and privacy](#data-sources-and-privacy)
 
@@ -41,7 +42,9 @@ No accounts. No ads. Saved jobs stay on your device, and resumes are never store
 ## Tech stack
 
 - **Monorepo**: pnpm workspaces + Turborepo, TypeScript (strict)
-- **Web**: Next.js 16 (App Router), Tailwind CSS v4, Radix Dialog
+- **Web**: Next.js 16 (App Router), Tailwind CSS v4, Radix Dialog, lucide icons
+- **Design**: Bricolage Grotesque (headings), Geist and Geist Mono (body, numbers), self-hosted via next/font. Colours, radii and type scale live in `packages/ui-tokens` and are shared with the mobile app
+- **Docker**: multi-stage images for the website and the workers, plus a Compose stack with Postgres
 - **Mobile**: Expo SDK 58, expo-router, React Query
 - **Database**: Neon Postgres, Drizzle ORM, Postgres full-text search
 - **Workers**: TypeScript scripts run by GitHub Actions on a schedule
@@ -61,6 +64,8 @@ roleup/
 ├── workers/            Job crawler, YC sync, funding tracker, ATS detection
 ├── data/               Seed companies (CSV) and cities
 ├── .github/workflows/  CI and scheduled workers
+├── Dockerfile          Website and workers images (see Run with Docker)
+├── docker-compose.yml  Local stack: Postgres + setup + website + crawler
 └── DECISIONS.md        Why things are built the way they are
 ```
 
@@ -136,16 +141,18 @@ DB_POOL_MAX=1
 
 All apps read the single `.env` file at the repo root.
 
-| Variable                | Required | What it's for                                                                              | Production      |
-| ----------------------- | :------: | ------------------------------------------------------------------------------------------ | --------------- |
-| `DATABASE_URL`          |    ✅    | Neon **pooled** connection (host contains `-pooler`). Used by the website, API and workers | Vercel + GitHub |
-| `DATABASE_URL_UNPOOLED` |    ✅    | Neon **direct** connection. Used only for migrations                                       | GitHub          |
-| `ADMIN_TOKEN`           |    ✅    | Password for `/admin`. **Must be 16+ characters**, or admin stays disabled                 | Vercel + GitHub |
-| `NEXT_PUBLIC_SITE_URL`  |    ✅    | Your site's address, e.g. `https://roleup.in`                                              | Vercel + GitHub |
-| `USD_INR_RATE`          |    —     | Dollar-to-rupee rate for salaries and funding (default `84`)                               | Vercel + GitHub |
-| `CRAWLER_CONTACT_EMAIL` |    —     | Contact shown in the crawler's User-Agent so job boards can reach you                      | GitHub          |
-| `EXPO_PUBLIC_API_URL`   |    —     | Website address the mobile app talks to                                                    | `eas.json`      |
-| `DB_POOL_MAX`           |    —     | Local PGlite database only (`1`). Leave unset with Neon                                    | Never           |
+| Variable                    | Required | What it's for                                                                                      | Production      |
+| --------------------------- | :------: | -------------------------------------------------------------------------------------------------- | --------------- |
+| `DATABASE_URL`              |    ✅    | Neon **pooled** connection (host contains `-pooler`). Used by the website, API and workers         | Vercel + GitHub |
+| `DATABASE_URL_UNPOOLED`     |    ✅    | Neon **direct** connection. Used only for migrations                                               | GitHub          |
+| `ADMIN_TOKEN`               |    ✅    | Password for `/admin`. **Must be 16+ characters**, or admin stays disabled                         | Vercel + GitHub |
+| `NEXT_PUBLIC_SITE_URL`      |    ✅    | Your site's address, e.g. `https://roleup.in`                                                      | Vercel + GitHub |
+| `NEXT_PUBLIC_CONTACT_EMAIL` |    —     | Public contact shown in the footer, Privacy and Terms (job removals, privacy requests). Build-time | Vercel          |
+| `ANDROID_APK_URL`           |    —     | Fallback APK download link. Prefer **Admin → Settings**, which needs no redeploy                   | Vercel          |
+| `USD_INR_RATE`              |    —     | Dollar-to-rupee rate for salaries and funding (default `84`)                                       | Vercel + GitHub |
+| `CRAWLER_CONTACT_EMAIL`     |    —     | Contact shown in the crawler's User-Agent so job boards can reach you                              | GitHub          |
+| `EXPO_PUBLIC_API_URL`       |    —     | Website address the mobile app talks to                                                            | `eas.json`      |
+| `DB_POOL_MAX`               |    —     | Local PGlite database only (`1`). Leave unset with Neon                                            | Never           |
 
 Generate a strong admin token with:
 
@@ -159,20 +166,22 @@ openssl rand -hex 24
 
 Run from the repo root.
 
-| Command                                     | What it does                                                              |
-| ------------------------------------------- | ------------------------------------------------------------------------- |
-| `pnpm --filter @roleup/web dev`             | Start the website on port 3000                                            |
-| `pnpm check`                                | Typecheck, lint and run all tests                                         |
-| `pnpm db:migrate`                           | Apply database migrations                                                 |
-| `pnpm db:seed`                              | Add or update cities and seed companies (safe to re-run)                  |
-| `pnpm db:generate`                          | Create a migration after editing `packages/db/src/schema.ts`              |
-| `pnpm crawl`                                | Crawl every company's job board, add new jobs, close removed ones         |
-| `pnpm crawl -- --company stripe`            | Crawl one company                                                         |
-| `pnpm sync-yc`                              | Tag companies that went through Y Combinator                              |
-| `pnpm track-funding`                        | Read funding news and queue rounds for review (`-- --dry-run` to preview) |
-| `pnpm detect-ats`                           | Find job boards for companies queued in admin                             |
-| `pnpm detect-ats -- --url <careers-url>`    | Test detection on any careers page                                        |
-| `pnpm --filter @roleup/workers verify-seed` | Re-check every seed company against the live APIs                         |
+| Command                                     | What it does                                                                                         |
+| ------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `pnpm --filter @roleup/web dev`             | Start the website on port 3000                                                                       |
+| `pnpm check`                                | Typecheck, lint and run all tests                                                                    |
+| `pnpm db:migrate`                           | Apply database migrations                                                                            |
+| `pnpm db:seed`                              | Add or update cities and seed companies (safe to re-run)                                             |
+| `pnpm db:generate`                          | Create a migration after editing `packages/db/src/schema.ts`                                         |
+| `pnpm crawl`                                | Crawl every company's job board, add new jobs, close removed ones                                    |
+| `pnpm crawl -- --company stripe`            | Crawl one company                                                                                    |
+| `pnpm sync-yc`                              | Tag companies that went through Y Combinator                                                         |
+| `pnpm track-funding`                        | Read funding news, verify each round and auto-approve the ones that pass (`-- --dry-run` to preview) |
+| `pnpm verify-funding`                       | Re-check pending and approved rounds (`-- --dry-run` prints scores only)                             |
+| `pnpm discover-companies`                   | Find and verify job boards for companies added without URLs (`-- --dry-run`)                         |
+| `pnpm detect-ats`                           | Find job boards for companies queued in admin                                                        |
+| `pnpm detect-ats -- --url <careers-url>`    | Test detection on any careers page                                                                   |
+| `pnpm --filter @roleup/workers verify-seed` | Re-check every seed company against the live APIs                                                    |
 
 ---
 
@@ -180,12 +189,19 @@ Run from the repo root.
 
 Sign in at `/admin` with your `ADMIN_TOKEN`.
 
-| Page              | Use it to                                                                                                                                                          |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Overview**      | See the latest worker runs, errors, and companies failing to crawl                                                                                                 |
-| **Analytics**     | Track page views, visitors, clicks, Apply clicks and apply rate, with a daily chart, top pages, most-applied jobs, referrers, devices and countries (7/30/90 days) |
-| **Funding queue** | Check each extracted round against its source, fix details, then approve or reject. Only approved rounds are public                                                |
-| **Companies**     | Add or edit companies, set tags, or queue ATS detection for a careers page                                                                                         |
+| Page              | Use it to                                                                                                                                                                                                                                                      |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Overview**      | See the latest worker runs, errors, and companies failing to crawl                                                                                                                                                                                             |
+| **Analytics**     | Page views, visitors, clicks, Apply clicks and apply rate; visitor funnel (visit → job → apply), traffic by hour, top searches, landing pages, sections, most-viewed companies, referrers, devices, countries and APK downloads. 7/30/90 days, with CSV export |
+| **Funding queue** | Rounds that need a person. Each shows its verification score and checklist; approve, reject, edit, or approve all verified at once                                                                                                                             |
+| **Companies**     | Add or edit companies. "Needs a job board" lists companies the daily worker could not set up automatically, with what it tried                                                                                                                                 |
+| **Settings**      | Funding auto-approve on/off and its threshold, and the Android APK link (used by `/app` and `/app/download`). Takes effect immediately, no redeploy                                                                                                            |
+
+**Funding automation.** Every day `track-funding` reads the news feeds and `verify-funding` checks each item: it re-opens the source article (it must still be online and its headline must name the company), and scores the amount, the round, other outlets reporting the same raise, and whether the company is already tracked. Items at or above the threshold (default 70) are approved automatically; the rest wait in the queue with the reasons. Approved items are re-checked weekly and go back to the queue if the article disappears. Duplicate reports of one raise are merged.
+
+**Company automation.** `discover-companies` sets up companies that arrive without links (usually from funding news). It looks for a Greenhouse, Ashby or Lever board by name and accepts it only when the board's own name matches the company and it has open jobs. Failing that, it looks for the company website and accepts a board linked from it only when that board's name also matches. A guessed website alone is never saved.
+
+**Android app.** Upload the APK anywhere with a public https link (a GitHub release asset, Cloudflare R2, S3, an EAS build URL) and paste the link in **Settings**. The site then shows "Get the app" in the header and footer, `/app` shows a download button and QR code, and `/app/download` always redirects to the current file, so links you share keep working across versions. App icons live in `apps/mobile/assets` (regenerate with `node apps/web/scripts/gen-mobile-icons.mjs`).
 
 **About analytics:** it is built in, with no cookies and no third-party scripts. It never stores IP addresses. Visitors are counted once per day with a hash that changes daily. Bots, admin pages and visitors with Do Not Track or Global Privacy Control are excluded.
 
@@ -213,6 +229,44 @@ curl "http://localhost:3000/api/v1/jobs?city=bengaluru&category=backend&limit=5"
 
 ---
 
+## Run with Docker
+
+One `Dockerfile` builds two images, and `docker-compose.yml` wires them to a local Postgres. Nothing secret goes into an image: `.env` is excluded from the build context, and the build doesn't need a database.
+
+| Image            | Target    | What it is                                                                      |
+| ---------------- | --------- | ------------------------------------------------------------------------------- |
+| `roleup-web`     | `web`     | Next.js standalone server (website, API, admin). Runs as non-root, about 220 MB |
+| `roleup-workers` | `workers` | Migrations, seed, crawler and daily jobs: `docker run roleup-workers <task>`    |
+
+### Full local stack
+
+```bash
+export ADMIN_TOKEN=$(openssl rand -hex 24)   # PowerShell: $env:ADMIN_TOKEN = "<16+ characters>"
+docker compose up -d --build                # Postgres, migrate + seed, website
+docker compose run --rm crawl               # fetch jobs (~20 seconds)
+docker compose run --rm workers daily       # YC tags, funding news, ATS detection
+```
+
+Open **http://localhost:3000**. Worker tasks: `setup` (migrate + seed), `migrate`, `seed`, `crawl`, `sync-yc`, `track-funding`, `verify-funding`, `discover-companies`, `detect-ats`, `verify-seed`, `daily`, `all`. Extra arguments are passed through, e.g. `docker compose run --rm workers crawl --company stripe`.
+
+> The stack always uses its own Postgres. It deliberately ignores `DATABASE_URL` from your `.env`, so a local run never touches production. To point it at another database, set `DOCKER_DATABASE_URL` (and `DOCKER_DATABASE_URL_UNPOOLED`).
+
+Stop with `docker compose down` (add `-v` to also delete the database volume).
+
+### Images on their own (e.g. with Neon)
+
+```bash
+docker build --target web --build-arg NEXT_PUBLIC_SITE_URL=https://roleup.in -t roleup-web .
+docker build --target workers -t roleup-workers .
+
+docker run --rm -e DATABASE_URL=... -e DATABASE_URL_UNPOOLED=... roleup-workers setup
+docker run -d -p 3000:3000 -e DATABASE_URL=... -e ADMIN_TOKEN=... -e USD_INR_RATE=84 roleup-web
+```
+
+`NEXT_PUBLIC_SITE_URL` is a build argument because Next.js bakes it into the page bundle; everything else is a runtime variable. Schedule `roleup-workers crawl` every 6 hours and `roleup-workers daily` once a day with cron, a Kubernetes CronJob, or the existing GitHub Actions workflow.
+
+---
+
 ## Deployment
 
 ### 1. Database (Neon)
@@ -225,7 +279,7 @@ curl "http://localhost:3000/api/v1/jobs?city=bengaluru&category=backend&limit=5"
 
 1. Import the GitHub repo and set **Root Directory** to `apps/web`.
 2. Add environment variables: `DATABASE_URL`, `ADMIN_TOKEN`, `NEXT_PUBLIC_SITE_URL`, `USD_INR_RATE`.
-3. Deploy. The database must be set up first, since some pages are built from it.
+3. Deploy. The build doesn't need the database; pages read it when requested.
 4. Add your domain and submit `https://<your-domain>/sitemap.xml` in Google Search Console.
 
 ### 3. Scheduled workers (GitHub Actions)

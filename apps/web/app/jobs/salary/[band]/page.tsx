@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { SALARY_BAND_META, SALARY_BANDS, salaryBandFromSlug } from '@roleup/core';
+import { IndianRupee } from 'lucide-react';
 import { ChipNav } from '@/components/ChipNav';
 import { ListPage, type SearchParams } from '@/components/ListPage';
 import { getMeta } from '@/lib/data';
@@ -34,6 +35,8 @@ export default async function SalaryBandPage({ params, searchParams }: Props) {
       searchParams={searchParams}
       fixed={{ band }}
       title={titleFor(band)}
+      icon={IndianRupee}
+      eyebrow="Salary band"
       intro={
         <>
           Bands use the employer&apos;s posted range (top of range, converted to INR per year). We

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { CITY_BY_SLUG } from '@roleup/core';
+import { Globe, MapPin } from 'lucide-react';
 import { ChipNav } from '@/components/ChipNav';
 import { ListPage, type SearchParams } from '@/components/ListPage';
 import { getMeta } from '@/lib/data';
@@ -36,6 +37,8 @@ export default async function CityPage({ params, searchParams }: Props) {
       searchParams={searchParams}
       fixed={{ city }}
       title={city === 'remote' ? 'Remote tech jobs open to India' : `Tech jobs in ${name}`}
+      icon={city === 'remote' ? Globe : MapPin}
+      eyebrow={city === 'remote' ? 'Remote' : `City · ${name}`}
       above={
         <ChipNav
           label="Cities"

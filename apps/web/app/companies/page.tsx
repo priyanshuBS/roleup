@@ -1,8 +1,11 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { Search } from 'lucide-react';
 import { COMPANY_TAG_LABELS, COMPANY_TAGS, timeAgo, type CompanyTag } from '@roleup/core';
 import { ChipNav } from '@/components/ChipNav';
 import { CompanyLogo } from '@/components/CompanyLogo';
+import { EmptyState } from '@/components/JobList';
+import { MetaPill, PageHeader } from '@/components/PageHeader';
 import { getCompanies } from '@/lib/data';
 import { companyHref } from '@/lib/urls';
 
@@ -27,11 +30,36 @@ export default async function CompaniesPage({ searchParams }: Props) {
 
   return (
     <div>
-      <h1 className="text-xl font-semibold tracking-tight">Companies</h1>
-      <p className="mt-1 mb-4 text-sm text-text-muted tabular-nums">
-        {companies.length} companies with open tech jobs. Counts are India-eligible roles
-        (onsite/hybrid in India or remote open to India).
-      </p>
+      <PageHeader
+        eyebrow="Directory"
+        title="Companies hiring"
+        description="Counts are India-eligible roles: on-site or hybrid in India, or remote and open to India."
+        meta={
+          <MetaPill>
+            <span className="num font-medium text-text">{companies.length}</span> companies with
+            open tech jobs
+          </MetaPill>
+        }
+      />
+      <form role="search" action="/companies" className="input-group mb-4 h-11 max-w-md px-3">
+        {tag && <input type="hidden" name="tag" value={tag} />}
+        <label htmlFor="company-q" className="sr-only">
+          Search companies
+        </label>
+        <Search size={16} aria-hidden className="mr-2.5 shrink-0 text-text-subtle" />
+        <input
+          id="company-q"
+          name="q"
+          type="search"
+          defaultValue={q}
+          placeholder="Search companies"
+          enterKeyHint="search"
+          className="w-full text-sm"
+        />
+        <button type="submit" className="sr-only">
+          Search
+        </button>
+      </form>
       <ChipNav
         label="Company type"
         current={tag ? `/companies?tag=${tag}` : '/companies'}
@@ -43,47 +71,38 @@ export default async function CompaniesPage({ searchParams }: Props) {
           })),
         ]}
       />
-      <form role="search" className="mb-4 flex max-w-sm gap-2" action="/companies">
-        {tag && <input type="hidden" name="tag" value={tag} />}
-        <label htmlFor="company-q" className="sr-only">
-          Search companies
-        </label>
-        <input
-          id="company-q"
-          name="q"
-          type="search"
-          defaultValue={q}
-          placeholder="Search companies"
-          className="field"
-        />
-        <button className="btn" type="submit">
-          Search
-        </button>
-      </form>
       {companies.length === 0 ? (
-        <p className="rounded-md border border-border bg-surface px-4 py-10 text-center text-text-muted">
-          No companies match.
-        </p>
+        <EmptyState
+          title="No companies match"
+          text="Try a different name or company type."
+          action={
+            <Link href="/companies" className="btn">
+              Show all companies
+            </Link>
+          }
+        />
       ) : (
-        <ul className="grid grid-cols-1 gap-px overflow-hidden rounded-md border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {companies.map((c) => (
-            <li
-              key={c.id}
-              className="relative flex items-center gap-3 bg-surface p-3 hover:bg-surface-muted/60"
-            >
-              <CompanyLogo company={c} />
+            <li key={c.id} className="card card-interactive relative flex items-center gap-3.5 p-4">
+              <CompanyLogo company={c} size={44} />
               <div className="min-w-0 flex-1">
                 <Link
                   href={companyHref(c.slug)}
-                  className="font-medium hover:text-accent after:absolute after:inset-0"
+                  className="block truncate font-medium after:absolute after:inset-0"
                 >
                   {c.name}
                 </Link>
-                <p className="text-xs text-text-subtle tabular-nums">
-                  {c.indiaJobsCount} India-eligible · {c.openJobsCount} total
+                <p className="truncate text-sm text-text-muted">
+                  <span className="num font-medium text-text">{c.indiaJobsCount}</span>{' '}
+                  {c.indiaJobsCount === 1 ? 'job' : 'jobs'} in India
                   {c.ycBatch ? ` · YC ${c.ycBatch}` : ''}
-                  {c.lastCrawledAt ? ` · checked ${timeAgo(c.lastCrawledAt, now)}` : ''}
                 </p>
+                {c.lastCrawledAt && (
+                  <p className="text-xs text-text-subtle">
+                    {c.openJobsCount} total · checked {timeAgo(c.lastCrawledAt, now)}
+                  </p>
+                )}
               </div>
             </li>
           ))}

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { Flame } from 'lucide-react';
 import { ChipNav } from '@/components/ChipNav';
 import { ListPage, type SearchParams } from '@/components/ListPage';
 import { getMeta } from '@/lib/data';
@@ -29,6 +30,8 @@ export default async function YcBatchPage({ params, searchParams }: Props) {
       searchParams={searchParams}
       fixed={{ tag: 'yc', batch: code }}
       title={`Jobs at YC ${code} companies`}
+      icon={Flame}
+      eyebrow={`Y Combinator · ${code}`}
       emptyText={`No open jobs at YC ${code} companies right now.`}
       above={
         <ChipNav

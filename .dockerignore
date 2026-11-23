@@ -1,0 +1,26 @@
+# Never send secrets or local state to the build context.
+.env
+.env.*
+!.env.example
+.pglite
+.git
+.github
+.turbo
+.vercel
+**/node_modules
+**/.next
+**/.turbo
+**/coverage
+**/*.tsbuildinfo
+**/.DS_Store
+npm-debug.log*
+
+# The Expo app isn't part of either image; only its manifest is needed for the lockfile.
+apps/mobile/*
+!apps/mobile/package.json
+
+Dockerfile
+docker-compose*.yml
+.dockerignore
+README.md
+DECISIONS.md

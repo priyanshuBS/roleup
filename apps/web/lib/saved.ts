@@ -66,6 +66,17 @@ export function useSavedJobs(): SavedJob[] {
   return useSyncExternalStore(subscribe, read, () => EMPTY);
 }
 
+const noopSubscribe = () => () => {};
+
+/** False during SSR and hydration, true after: lets UI avoid flashing an empty state. */
+export function useHydrated(): boolean {
+  return useSyncExternalStore(
+    noopSubscribe,
+    () => true,
+    () => false,
+  );
+}
+
 export function toggleSaved(job: Omit<SavedJob, 'savedAt'>): boolean {
   const list = read();
   if (list.some((j) => j.id === job.id)) {

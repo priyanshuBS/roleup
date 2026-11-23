@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+import { Bookmark } from 'lucide-react';
+import { PageHeader } from '@/components/PageHeader';
 import { SavedList } from './SavedList';
 
 export const metadata: Metadata = {
@@ -10,11 +12,12 @@ export const metadata: Metadata = {
 export default function SavedPage() {
   return (
     <div className="max-w-3xl">
-      <h1 className="text-xl font-semibold tracking-tight">Saved jobs</h1>
-      <p className="mt-1 mb-4 text-sm text-text-muted">
-        Stored only in this browser. No account, nothing sent to our servers. Clearing site data
-        removes them.
-      </p>
+      <PageHeader
+        icon={Bookmark}
+        eyebrow="Your shortlist"
+        title="Saved jobs"
+        description="Stored only in this browser. No account, nothing sent to our servers. Clearing site data removes them."
+      />
       <SavedList />
     </div>
   );

@@ -1,4 +1,5 @@
 import { config as loadEnv } from 'dotenv';
+import path from 'node:path';
 import type { NextConfig } from 'next';
 
 // One .env at the repo root for every app. On Vercel, env vars come from the dashboard.
@@ -34,6 +35,11 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  // Docker builds set NEXT_OUTPUT=standalone for a self-contained server (see Dockerfile).
+  // Tracing starts at the monorepo root so workspace packages are included.
+  ...(process.env.NEXT_OUTPUT === 'standalone'
+    ? { output: 'standalone' as const, outputFileTracingRoot: path.resolve(process.cwd(), '../..') }
+    : {}),
   transpilePackages: ['@roleup/core', '@roleup/db', '@roleup/ui-tokens'],
   serverExternalPackages: ['pg', '@neondatabase/serverless', 'unpdf', 'mammoth'],
   poweredByHeader: false,

@@ -7,6 +7,9 @@ export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3
   '',
 );
 
+/** Public contact address (job takedowns, privacy questions). Optional: hidden when unset. */
+export const CONTACT_EMAIL = (process.env.NEXT_PUBLIC_CONTACT_EMAIL ?? '').trim() || null;
+
 export function absoluteUrl(path = '/'): string {
   return `${SITE_URL}${path.startsWith('/') ? path : `/${path}`}`;
 }

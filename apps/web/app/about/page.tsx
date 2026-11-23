@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { Info } from 'lucide-react';
 import { formatCount } from '@roleup/core';
 import { Prose } from '@/components/Prose';
 import { getCompanies, getMeta } from '@/lib/data';
@@ -10,10 +11,13 @@ export const metadata: Metadata = {
   alternates: { canonical: '/about' },
 };
 
+// Rendered on request (data is still cached for 10 minutes), so builds never need the database.
+export const dynamic = 'force-dynamic';
+
 export default async function AboutPage() {
   const [meta, companies] = await Promise.all([getMeta(), getCompanies({ hasJobs: true })]);
   return (
-    <Prose title="About RoleUp">
+    <Prose title="About RoleUp" icon={Info} eyebrow="How it works">
       <p>
         RoleUp lists tech jobs you can apply to from India: on-site and hybrid roles in Indian
         cities, and remote roles open to India. Right now that&apos;s{' '}

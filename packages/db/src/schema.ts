@@ -83,6 +83,9 @@ export const companies = pgTable(
     /** Set when ATS detection should run for this company (new funded company, admin trigger). */
     atsDetectRequestedAt: timestamp('ats_detect_requested_at', { withTimezone: true }),
     openJobsCount: integer('open_jobs_count').notNull().default(0),
+    /** Automatic board/website discovery for companies added without URLs (e.g. from funding news). */
+    discoveryNote: text('discovery_note'),
+    discoveryCheckedAt: timestamp('discovery_checked_at', { withTimezone: true }),
     ...timestamps,
   },
   (t) => [
@@ -166,6 +169,17 @@ export const fundings = pgTable(
     /** The headline we extracted from (facts only; never the article body). */
     headline: text('headline'),
     status: fundingStatusEnum('status').notNull().default('pending'),
+    /** 0-100 from automatic verification (see @roleup/core scoreFunding). Null = not checked yet. */
+    confidence: integer('confidence'),
+    /** One line per verification check, e.g. "✓ Source article is live and names the company". */
+    verifyNotes: text('verify_notes')
+      .array()
+      .notNull()
+      .default(sql`'{}'::text[]`),
+    verifiedAt: timestamp('verified_at', { withTimezone: true }),
+    /** Other feeds that reported the same raise (same company, within a few days). */
+    corroborations: integer('corroborations').notNull().default(0),
+    autoApproved: boolean('auto_approved').notNull().default(false),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [
@@ -195,6 +209,16 @@ export const rateLimits = pgTable('rate_limits', {
   count: integer('count').notNull().default(0),
 });
 
+/** Runtime settings editable in /admin/settings (no redeploy needed). */
+export const settings = pgTable('settings', {
+  key: text('key').primaryKey(),
+  value: text('value').notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true })
+    .notNull()
+    .defaultNow()
+    .$onUpdate(() => new Date()),
+});
+
 export const analyticsEventType = pgEnum('analytics_event_type', ['view', 'click']);
 
 /**
@@ -218,6 +242,10 @@ export const analyticsEvents = pgTable(
     device: text('device').notNull().default('desktop'),
     country: text('country'),
     visitor: text('visitor').notNull(),
+    /** Views only: the search text (?q=) on list pages, lowercased. */
+    query: text('query'),
+    /** Views only: first page of a visit (landing page). */
+    entry: boolean('entry').notNull().default(false),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [

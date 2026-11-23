@@ -50,20 +50,50 @@ export function parseDescription(text: string): Block[] {
   });
 }
 
+const URL_RE = /(https?:\/\/[^\s<>"')\]]+)/g;
+
+/** Plain text with http(s) URLs turned into links. React escapes everything else. */
+function Linkified({ text }: { text: string }) {
+  const parts = text.split(URL_RE);
+  if (parts.length === 1) return <>{text}</>;
+  return (
+    <>
+      {parts.map((part, i) => {
+        if (i % 2 === 0) return part;
+        // Keep trailing sentence punctuation out of the link.
+        const url = part.replace(/[.,;:!?]+$/, '');
+        const rest = part.slice(url.length);
+        return (
+          <span key={i}>
+            <a href={url} target="_blank" rel="noopener noreferrer nofollow ugc" className="link">
+              {url.replace(/^https?:\/\/(www\.)?/, '')}
+            </a>
+            {rest}
+          </span>
+        );
+      })}
+    </>
+  );
+}
+
 export function JobDescription({ text }: { text: string }) {
   const blocks = parseDescription(text);
   return (
-    <div className="space-y-3 text-[0.9375rem] leading-7 text-text">
+    <div className="max-w-[70ch] space-y-4 text-[0.96875rem] leading-[1.7] text-text [overflow-wrap:anywhere]">
       {blocks.map((b, i) =>
         b.type === 'h' ? (
-          <h3 key={i} className="pt-2 text-base font-semibold text-text">
+          <h3 key={i} className="pt-3 text-[0.96875rem] font-semibold text-text first:pt-0">
             {b.text}
           </h3>
         ) : b.type === 'ul' ? (
-          <ul key={i} className="list-disc space-y-1.5 pl-5 marker:text-text-subtle">
+          <ul key={i} className="space-y-1.5">
             {b.items.map((it, j) => (
-              <li key={j} className="pl-1">
-                {it}
+              <li key={j} className="relative pl-5 text-text-muted">
+                <span
+                  aria-hidden
+                  className="absolute left-1 top-[0.7em] h-[5px] w-[5px] rounded-full bg-text-subtle"
+                />
+                <Linkified text={it} />
               </li>
             ))}
           </ul>
@@ -72,7 +102,7 @@ export function JobDescription({ text }: { text: string }) {
             {b.lines.map((l, j) => (
               <span key={j}>
                 {j > 0 && <br />}
-                {l}
+                <Linkified text={l} />
               </span>
             ))}
           </p>

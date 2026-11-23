@@ -1,53 +1,64 @@
 /**
  * RoleUp design tokens. Single source of truth for web (Tailwind CSS variables) and mobile
- * (React Native StyleSheet). One accent colour (deep ink blue), neutral greys, 1px borders.
+ * (React Native StyleSheet).
+ *
+ * The look: an editorial index. Warm paper and ink neutrals carry almost everything; one
+ * vermilion accent marks interaction (links, selection, focus) and the Apply action. Colour is
+ * used for meaning, never decoration. All text pairs meet WCAG AA on their backgrounds.
  */
 
 export const palette = {
   light: {
-    bg: '#FAFAF8',
+    bg: '#FAFAF7',
     surface: '#FFFFFF',
-    surfaceMuted: '#F3F3F0',
-    border: '#E3E3DE',
-    borderStrong: '#CFCFC8',
-    text: '#17171A',
-    textMuted: '#55555C',
+    surfaceMuted: '#F3F2EE',
+    border: '#E7E5DF',
+    borderStrong: '#D3D1C9',
+    text: '#161616',
+    textMuted: '#4D4D55',
     textSubtle: '#6B6B73',
-    accent: '#1F4FA8',
-    accentHover: '#183F87',
-    accentSubtle: '#E8EEF9',
+    accent: '#C2410C',
+    accentHover: '#A3360A',
+    accentSubtle: '#FCEEE7',
     accentText: '#FFFFFF',
-    success: '#1D6B3F',
-    successSubtle: '#E5F2EA',
-    warning: '#8A5A00',
-    warningSubtle: '#FBF0DA',
-    danger: '#B3261E',
-    dangerSubtle: '#FBE9E7',
-    focus: '#1F4FA8',
+    /** Kept for the mobile app's "new" marker; the web uses it sparingly. */
+    highlight: '#C4EF4A',
+    highlightHover: '#B4E331',
+    highlightText: '#141C05',
+    success: '#13734A',
+    successSubtle: '#E4F3EA',
+    warning: '#8A5200',
+    warningSubtle: '#FBF0DC',
+    danger: '#B42318',
+    dangerSubtle: '#FDECEA',
+    focus: '#C2410C',
     /** Single-series chart marks (validated vs surface with the dataviz checker). */
-    chart: '#1F4FA8',
+    chart: '#C2410C',
   },
   dark: {
-    bg: '#0E0E10',
-    surface: '#151518',
-    surfaceMuted: '#1C1C20',
-    border: '#2A2A2F',
-    borderStrong: '#3A3A41',
+    bg: '#0E0E0F',
+    surface: '#161618',
+    surfaceMuted: '#1D1D20',
+    border: '#2A2A2E',
+    borderStrong: '#3B3B41',
     text: '#EDEDEF',
-    textMuted: '#A9A9B1',
-    textSubtle: '#8B8B94',
-    accent: '#7EA6F2',
-    accentHover: '#9BBBF6',
-    accentSubtle: '#1A2540',
-    accentText: '#0E0E10',
-    success: '#6FCF97',
-    successSubtle: '#15281D',
-    warning: '#E8B45A',
-    warningSubtle: '#2B2212',
-    danger: '#F2867D',
-    dangerSubtle: '#2E1715',
-    focus: '#7EA6F2',
-    chart: '#5B8BE6',
+    textMuted: '#AAAAB3',
+    textSubtle: '#8A8A94',
+    accent: '#FF8A57',
+    accentHover: '#FFA47C',
+    accentSubtle: '#2B1A11',
+    accentText: '#1A0A02',
+    highlight: '#C8F25A',
+    highlightHover: '#D5F77C',
+    highlightText: '#141C05',
+    success: '#5BCB94',
+    successSubtle: '#0F271B',
+    warning: '#F0B65A',
+    warningSubtle: '#2A1F0E',
+    danger: '#FF8A80',
+    dangerSubtle: '#331513',
+    focus: '#FF8A57',
+    chart: '#FF8A57',
   },
 } as const;
 
@@ -72,8 +83,11 @@ export const space = {
 } as const;
 
 export const radius = {
-  sm: 4,
-  md: 6,
+  sm: 5,
+  md: 8,
+  lg: 12,
+  xl: 16,
+  '2xl': 22,
   full: 9999,
 } as const;
 
@@ -86,15 +100,22 @@ export const fontSize = {
   lg: [18, 26],
   xl: [22, 28],
   '2xl': [28, 34],
+  '3xl': [36, 40],
+  '4xl': [48, 52],
+  '5xl': [60, 62],
 } as const;
 
 export const fontWeight = {
   regular: '400',
   medium: '500',
   semibold: '600',
+  bold: '700',
 } as const;
 
 export const fontFamily = {
+  /** Headings. The web app uses Geist (next/font) for headings too; these are the fallbacks. */
+  display: ['ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
+  /** Body. The web app loads Geist via next/font. */
   sans: [
     'ui-sans-serif',
     'system-ui',
@@ -105,13 +126,14 @@ export const fontFamily = {
     'Arial',
     'sans-serif',
   ],
+  /** Numbers, salaries, timestamps. The web app loads Geist Mono. */
   mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Consolas', 'monospace'],
 } as const;
 
 export const layout = {
-  maxWidth: 1120,
-  logoSize: 28,
-  jobRowHeight: 76,
+  maxWidth: 1240,
+  logoSize: 44,
+  jobRowHeight: 92,
 } as const;
 
 const kebab = (token: string) => token.replace(/[A-Z]/g, (m) => `-${m.toLowerCase()}`);
@@ -120,6 +142,9 @@ const kebab = (token: string) => token.replace(/[A-Z]/g, (m) => `-${m.toLowerCas
 export function cssVarName(token: string): string {
   return `--ru-${kebab(token)}`;
 }
+
+const fontStack = (fonts: readonly string[]) =>
+  fonts.map((f) => (f.includes(' ') ? `'${f}'` : f)).join(', ');
 
 /**
  * CSS for the web app: raw colour variables per scheme (light, dark via media query, and an
@@ -141,6 +166,10 @@ export function buildTokensCss(): string {
         `  --text-${k}: ${size / 16}rem;\n  --text-${k}--line-height: ${lh / size};`,
     )
     .join('\n');
+  const themeRadius = Object.entries(radius)
+    .filter(([k]) => k !== 'full')
+    .map(([k, v]) => `  --radius-${k}: ${v}px;`)
+    .join('\n');
   return [
     '/* Generated by packages/ui-tokens/scripts/generate-css.ts. Do not edit by hand. */',
     `:root {\n  color-scheme: light;\n${block('light')}\n}`,
@@ -149,10 +178,10 @@ export function buildTokensCss(): string {
     [
       '@theme inline {',
       themeColors,
-      `  --radius-sm: ${radius.sm}px;`,
-      `  --radius-md: ${radius.md}px;`,
-      `  --font-sans: ${fontFamily.sans.map((f) => (f.includes(' ') ? `'${f}'` : f)).join(', ')};`,
-      `  --font-mono: ${fontFamily.mono.map((f) => (f.includes(' ') ? `'${f}'` : f)).join(', ')};`,
+      themeRadius,
+      `  --font-display: ${fontStack(fontFamily.display)};`,
+      `  --font-sans: ${fontStack(fontFamily.sans)};`,
+      `  --font-mono: ${fontStack(fontFamily.mono)};`,
       themeText,
       '}',
     ].join('\n'),

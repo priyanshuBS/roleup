@@ -85,6 +85,11 @@ export async function POST(req: Request) {
       // Vercel adds the visitor's country; nothing is looked up or stored beyond the code.
       country: req.headers.get('x-vercel-ip-country')?.slice(0, 2) ?? null,
       visitor,
+      query:
+        e.t === 'view' && e.q
+          ? e.q.replace(/\s+/g, ' ').trim().toLowerCase().slice(0, 100) || null
+          : null,
+      entry: e.t === 'view' && e.e === 1,
     });
   } catch (err) {
     console.error('analytics write failed:', err instanceof Error ? err.name : 'unknown');

@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
+import { Scale } from 'lucide-react';
 import { Prose } from '@/components/Prose';
+import { CONTACT_EMAIL } from '@/lib/site';
 
 export const metadata: Metadata = {
   title: 'Terms',
@@ -8,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function TermsPage() {
   return (
-    <Prose title="Terms of use" updated="23 November 2026">
+    <Prose title="Terms of use" updated="23 November 2026" icon={Scale}>
       <h2>What RoleUp is</h2>
       <p>
         RoleUp is a free directory of job postings published by employers on their public job
@@ -37,6 +39,15 @@ export default function TermsPage() {
       </p>
       <h2>No warranty</h2>
       <p>The service is provided as is, without warranties of any kind.</p>
+      {CONTACT_EMAIL && (
+        <>
+          <h2>Contact and removals</h2>
+          <p>
+            Employers who want a posting corrected or removed, and anyone with a question about
+            these terms, can write to <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
+          </p>
+        </>
+      )}
     </Prose>
   );
 }

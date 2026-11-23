@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-/** Horizontal list of navigation chips (batches, bands, remote types…). */
+/** Horizontal row of navigation chips (batches, bands, remote types…). Scrolls on phones. */
 export function ChipNav({
   label,
   items,
@@ -11,7 +11,10 @@ export function ChipNav({
   current?: string;
 }) {
   return (
-    <nav aria-label={label} className="mb-5 -mx-4 px-4 overflow-x-auto [scrollbar-width:none]">
+    <nav
+      aria-label={label}
+      className="no-scrollbar -mx-4 mb-6 overflow-x-auto px-4 sm:mx-0 sm:px-0"
+    >
       <ul className="flex gap-2 sm:flex-wrap">
         {items.map((i) => (
           <li key={i.href}>
@@ -22,9 +25,7 @@ export function ChipNav({
             >
               {i.label}
               {i.count !== undefined && (
-                <span className="ml-1.5 tabular-nums text-text-subtle">
-                  {i.count.toLocaleString('en-IN')}
-                </span>
+                <span className="chip-count">{i.count.toLocaleString('en-IN')}</span>
               )}
             </Link>
           </li>

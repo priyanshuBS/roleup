@@ -11,6 +11,8 @@
     "crawl": "tsx src/crawl-jobs.ts",
     "sync-yc": "tsx src/sync-yc.ts",
     "track-funding": "tsx src/track-funding.ts",
+    "verify-funding": "tsx src/verify-funding.ts",
+    "discover-companies": "tsx src/discover-companies.ts",
     "detect-ats": "tsx src/detect-ats.ts",
     "verify-seed": "tsx src/verify-seed.ts",
     "gen:cities": "tsx src/gen-cities.ts"

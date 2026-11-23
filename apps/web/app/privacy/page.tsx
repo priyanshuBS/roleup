@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
+import { ShieldCheck } from 'lucide-react';
 import { Prose } from '@/components/Prose';
+import { CONTACT_EMAIL } from '@/lib/site';
 
 export const metadata: Metadata = {
   title: 'Privacy',
@@ -10,7 +12,7 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
   return (
-    <Prose title="Privacy" updated="23 November 2026">
+    <Prose title="Privacy" updated="23 November 2026" icon={ShieldCheck}>
       <p>
         Short version: no accounts, no cookies, no third-party trackers, and we never keep your
         resume. We count page views and clicks ourselves, anonymously.
@@ -65,6 +67,15 @@ export default function PrivacyPage() {
         When you click Apply you go to the employer&apos;s site, and their privacy policy applies
         there.
       </p>
+      {CONTACT_EMAIL && (
+        <>
+          <h2>Contact</h2>
+          <p>
+            Questions or requests about your data:{' '}
+            <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
+          </p>
+        </>
+      )}
     </Prose>
   );
 }
