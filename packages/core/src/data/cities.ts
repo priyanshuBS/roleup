@@ -1,0 +1,152 @@
+/**
+ * Normalized Indian cities. Source of truth; `data/cities.json` at the repo root is generated
+ * from this file (`pnpm --filter @roleup/workers gen:cities`) and a test keeps them in sync.
+ * Aliases are matched case-insensitively on word boundaries against raw location strings.
+ */
+export interface CityDef {
+  name: string;
+  slug: string;
+  state: string;
+  country: 'IN';
+  aliases: string[];
+}
+
+export const CITIES: CityDef[] = [
+  {
+    name: 'Bengaluru',
+    slug: 'bengaluru',
+    state: 'Karnataka',
+    country: 'IN',
+    aliases: ['bengaluru', 'bangalore', 'banglore', 'bengalore', 'blr', 'bangalore urban'],
+  },
+  {
+    name: 'Hyderabad',
+    slug: 'hyderabad',
+    state: 'Telangana',
+    country: 'IN',
+    aliases: ['hyderabad', 'secunderabad', 'hyd', 'hitec city', 'gachibowli'],
+  },
+  {
+    name: 'Pune',
+    slug: 'pune',
+    state: 'Maharashtra',
+    country: 'IN',
+    aliases: ['pune', 'poona', 'hinjewadi'],
+  },
+  {
+    name: 'Mumbai',
+    slug: 'mumbai',
+    state: 'Maharashtra',
+    country: 'IN',
+    aliases: ['mumbai', 'bombay', 'navi mumbai', 'thane', 'powai', 'bkc'],
+  },
+  {
+    name: 'Delhi NCR',
+    slug: 'delhi-ncr',
+    state: 'Delhi',
+    country: 'IN',
+    aliases: [
+      'delhi ncr',
+      'delhi',
+      'new delhi',
+      'ncr',
+      'gurgaon',
+      'gurugram',
+      'noida',
+      'greater noida',
+      'ghaziabad',
+      'faridabad',
+    ],
+  },
+  {
+    name: 'Chennai',
+    slug: 'chennai',
+    state: 'Tamil Nadu',
+    country: 'IN',
+    aliases: ['chennai', 'madras'],
+  },
+  {
+    name: 'Kolkata',
+    slug: 'kolkata',
+    state: 'West Bengal',
+    country: 'IN',
+    aliases: ['kolkata', 'calcutta'],
+  },
+  {
+    name: 'Ahmedabad',
+    slug: 'ahmedabad',
+    state: 'Gujarat',
+    country: 'IN',
+    aliases: ['ahmedabad', 'amdavad'],
+  },
+  {
+    name: 'Gandhinagar',
+    slug: 'gandhinagar',
+    state: 'Gujarat',
+    country: 'IN',
+    aliases: ['gandhinagar', 'gift city'],
+  },
+  { name: 'Jaipur', slug: 'jaipur', state: 'Rajasthan', country: 'IN', aliases: ['jaipur'] },
+  {
+    name: 'Kochi',
+    slug: 'kochi',
+    state: 'Kerala',
+    country: 'IN',
+    aliases: ['kochi', 'cochin', 'ernakulam'],
+  },
+  {
+    name: 'Thiruvananthapuram',
+    slug: 'thiruvananthapuram',
+    state: 'Kerala',
+    country: 'IN',
+    aliases: ['thiruvananthapuram', 'trivandrum', 'technopark'],
+  },
+  {
+    name: 'Coimbatore',
+    slug: 'coimbatore',
+    state: 'Tamil Nadu',
+    country: 'IN',
+    aliases: ['coimbatore'],
+  },
+  { name: 'Indore', slug: 'indore', state: 'Madhya Pradesh', country: 'IN', aliases: ['indore'] },
+  {
+    name: 'Chandigarh',
+    slug: 'chandigarh',
+    state: 'Chandigarh',
+    country: 'IN',
+    aliases: ['chandigarh', 'mohali', 'panchkula', 'tricity'],
+  },
+  {
+    name: 'Mysuru',
+    slug: 'mysuru',
+    state: 'Karnataka',
+    country: 'IN',
+    aliases: ['mysuru', 'mysore'],
+  },
+  {
+    name: 'Bhubaneswar',
+    slug: 'bhubaneswar',
+    state: 'Odisha',
+    country: 'IN',
+    aliases: ['bhubaneswar'],
+  },
+  { name: 'Nagpur', slug: 'nagpur', state: 'Maharashtra', country: 'IN', aliases: ['nagpur'] },
+  { name: 'Goa', slug: 'goa', state: 'Goa', country: 'IN', aliases: ['goa', 'panaji', 'panjim'] },
+  {
+    name: 'Vadodara',
+    slug: 'vadodara',
+    state: 'Gujarat',
+    country: 'IN',
+    aliases: ['vadodara', 'baroda'],
+  },
+  { name: 'Lucknow', slug: 'lucknow', state: 'Uttar Pradesh', country: 'IN', aliases: ['lucknow'] },
+  {
+    name: 'Visakhapatnam',
+    slug: 'visakhapatnam',
+    state: 'Andhra Pradesh',
+    country: 'IN',
+    aliases: ['visakhapatnam', 'vizag'],
+  },
+];
+
+export const CITY_BY_SLUG = new Map(CITIES.map((c) => [c.slug, c]));

@@ -1,0 +1,9 @@
+node_modules
+.next
+.turbo
+dist
+.expo
+.pglite
+pnpm-lock.yaml
+packages/db/drizzle
+**/fixtures/*.json

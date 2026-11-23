@@ -1,0 +1,28 @@
+{
+  "name": "@roleup/workers",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "eslint src",
+    "test": "vitest run",
+    "seed": "tsx src/seed.ts",
+    "crawl": "tsx src/crawl-jobs.ts",
+    "sync-yc": "tsx src/sync-yc.ts",
+    "track-funding": "tsx src/track-funding.ts",
+    "detect-ats": "tsx src/detect-ats.ts",
+    "verify-seed": "tsx src/verify-seed.ts",
+    "gen:cities": "tsx src/gen-cities.ts"
+  },
+  "dependencies": {
+    "@roleup/core": "workspace:*",
+    "@roleup/db": "workspace:*",
+    "dotenv": "18.0.10",
+    "fast-xml-parser": "5.12.1",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "tsx": "4.23.15"
+  }
+}
