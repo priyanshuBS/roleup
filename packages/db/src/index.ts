@@ -19,3 +19,4 @@ export {
   count,
 } from 'drizzle-orm';
 export * from './queries';
+export * from './mutations';

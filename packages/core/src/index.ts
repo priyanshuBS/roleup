@@ -4,3 +4,4 @@ export * from './types';
 export * from './format';
 export * from './data/cities';
 export * from './classifiers';
+export * from './funding';

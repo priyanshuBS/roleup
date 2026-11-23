@@ -44,3 +44,18 @@ Choices made where the brief was ambiguous or where a constraint forced a call. 
 - **Company directory counts** show India-eligible open jobs next to the total, matching what the default feed shows.
 - **CSP** allows inline scripts (JSON-LD and the pre-paint theme snippet) and `https:` images (logos). No third-party scripts are loaded at all.
 - **ESLint 9.39.** `eslint-config-next` pulls in `eslint-plugin-react`, which doesn't support ESLint 10 yet.
+
+## Funding
+
+- **Feeds** (`workers/src/funding-sources.ts`): Economic Times Tech funding section, Inc42 (all news, filtered by extraction) and TechCrunch's funding tag. All three publish public RSS, and their robots.txt allows these paths (checked 2026-11-23). YourStory's feed is mostly non-funding content and Entrackr/VCCircle have no working feed, so they're not included.
+- **Extraction** uses the headline first; the RSS summary is consulted only for a missing amount/round and is never stored. Rejected outright: rounds not yet closed ("in talks to raise", "plans to raise"), VC firms raising their own fund ("raises an $85M fund"), IPOs/acquisitions/stake sales. A round that isn't named is stored as `Undisclosed`.
+- **Facts only.** We store company, round, amount (+ USD and INR at the static rate), investors, date, source URL and source name. The headline is stored **only while pending** so the reviewer has context, and is cleared on approve/reject. It's never shown publicly.
+- **New companies** from funding news are created with `ats = none` and `ats_detect_requested_at` set. The daily workflow runs `detect-ats` for them. They don't appear in directories until they have open jobs.
+- **`recently_funded` tag** = an approved round in the last 180 days, recomputed by `track-funding` and on every admin approve/reject.
+- **Duplicates** are keyed on the canonical source URL (tracking params stripped). The same round reported by two outlets produces two pending entries; the reviewer rejects one. The public page shows one card per company (latest round).
+
+## Admin
+
+- **Auth**: a single `ADMIN_TOKEN` (16+ chars; admin is disabled otherwise). Signing in sets an httpOnly, SameSite=Strict cookie holding an HMAC of the token, not the token. Comparisons are constant-time. Login is limited to 5 attempts per 15 minutes per IP, and admin pages/actions to 300 requests per minute.
+- **Mutations are Server Actions** (zod-validated) and call `updateTag('jobs'|'funding')`, so public pages reflect changes on the next request.
+- **"Trigger ATS detection"** queues the company (`ats_detect_requested_at`); the next `detect-ats` run (daily workflow, or `pnpm detect-ats`) handles it. Detection does network I/O with robots.txt checks, which belongs in the worker, not a request handler.
